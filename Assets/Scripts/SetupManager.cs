@@ -2,82 +2,87 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class SetupManager : MonoBehaviour {
 
-	public Canvas playerNumbers;
-	public Canvas playerConfig;
 
-	public List<GameObject> nameFields;
+	// Scene objects
 
-	public void IncrementPlayers(Text numText)
-	{
-		GameManager.Get().IncrementPlayers(numText);
+	public Canvas playerNumbersCanvas;
+	public Text numberOfPlayersText;
+
+	public Canvas playerConfigCanvas;
+	private List<InputField> nameFields = new List<InputField>(); //these are generated
+
+	public Canvas introStoryCanvas;
+
+
+	// Prefabs
+
+	public InputField playerNameInputField;
+
+
+
+	// Common methods
+
+	void Start() {
+		if (playerNumbersCanvas == null)
+			Debug.Log("NO PLAYERNUMBERS CANVAS DETECTED!");
+		if (playerConfigCanvas == null)
+			Debug.Log("NO PLAYERCONFIG CANVAS DETECTED!");
+	}
+
+
+	// Button actions methods
+
+	public void IncrementPlayers(Text numText) {
+		int numberOfPlayers = int.Parse(numberOfPlayersText.text);
+		if (numberOfPlayers < GameManager.MAX_PLAYERS) {
+			numberOfPlayers++;
+			numberOfPlayersText.text = numberOfPlayers.ToString();
+		}
 	}
 	public void DecrementPlayers(Text numText) {
-		GameManager.Get().DecrementPlayers(numText);
+		int numberOfPlayers = int.Parse(numberOfPlayersText.text);
+		if (numberOfPlayers > GameManager.MIN_PLAYERS) {
+			numberOfPlayers--;
+			numberOfPlayersText.text = numberOfPlayers.ToString();
+		}
+
 	}
 
+
+	// Game State management methods
+
 	public void MoveToPlayerConfig() {
-		int toRemove = 0;
-		if (playerNumbers)
-			playerNumbers.gameObject.SetActive(false);
-		if (playerConfig)
-			playerConfig.gameObject.SetActive(true);
-		switch (GameManager.Get().NumPlayers) {
+		if (playerNumbersCanvas) 
+			playerNumbersCanvas.gameObject.SetActive(false);
+		if (playerConfigCanvas)
+			playerConfigCanvas.gameObject.SetActive(true);
 
-			case 4: {
-					break;
-				}
+		GameManager.Get().LoadState(GameManager.GameState.PlayerConfig);
 
-			case 3: {
-					toRemove = 1;
-					break;
-				}
-				
-			case 2: {
-					toRemove = 2;
-					break;
-				}
-				
-			case 1: {
-					toRemove = 3;
-					break;
-				}
-				
-			default: {
-					Debug.Log("Invalid number of players");
-					toRemove = 0;
-					break;
-				}
+		for (int i = 0; i < int.Parse(numberOfPlayersText.text); i++) {
+			Image insetImage = playerConfigCanvas.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name == "InsetImage");
+			var newField = Instantiate(playerNameInputField, new Vector2(insetImage.transform.position.x, 80 - (i * 75)), Quaternion.identity);
+			newField.transform.SetParent(insetImage.transform, false);
+			nameFields.Add(newField);
 		}
-
-		for (int i = 0; i < toRemove; i++) {
-			nameFields[nameFields.Count - 1 - i].SetActive(false);
-		}
-
-		GameManager.Get().LoadNextState();
 	}
 
 	public void MoveToStoryMode() {
-		for (int i = 0; i < nameFields.Count; i++) {
-			if (nameFields[i].activeSelf) {
-				Text t = nameFields[i].GetComponentInChildren<Text>();
-				if (t) {
-					GameManager.Get().SetPlayer(i, t.text);
-				}
-			}
+		foreach (InputField playerName in nameFields) {
+			GameManager.Get().AddPlayer(playerName.text);
 		}
-		GameManager.Get().LoadNextState();
+
+		playerConfigCanvas.gameObject.SetActive(false);
+		introStoryCanvas.gameObject.SetActive(true);
+
+		GameManager.Get().LoadState(GameManager.GameState.Storyline);
 	}
 
-	void Start() {
-		if (playerNumbers == null)
-			Debug.Log("NO PLAYERNUMBERS CANVAS DETECTED!");
-		if (playerConfig == null)
-			Debug.Log("NO PLAYERCONFIG CANVAS DETECTED!");
-		if (nameFields.Count == 0) {
-			Debug.Log("NO NAMEFIELD ENTRIES IN LIST");
-		}
+	public void StartGame() {
+		GameManager.Get().LoadState(GameManager.GameState.PlayerLoop);
 	}
 }

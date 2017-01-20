@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
-	public static int PROTOTYPE_MAX_PLAYERS = 4;
+	// Constants
+	public const int MIN_PLAYERS = 2;
+	public const int MAX_PLAYERS = 4;
 
 	private static GameManager Instance = null;
 
@@ -53,9 +56,6 @@ public class GameManager : MonoBehaviour {
 		if (players == null)
 			players = new List<string>();
 
-		if (players.Count == 0)
-			players.Add("");
-
 		if (options == null)
 			options = new List<Option>();
 
@@ -63,41 +63,15 @@ public class GameManager : MonoBehaviour {
 		DontDestroyOnLoad(gameObject);
 	}
 
-	public void SetPlayer(int id, string input) {
-		if (id < players.Count)
-		players[id] = input;
-		else {
-			Debug.Log("HOW DID YOU MANAGE TO CHANGE A PLAYER THAT DOESN'T EXIST!??");
-		}
+	public void AddPlayer(string name) {
+		players.Add(name);
 	}
 
-	public void SetNumPlayers(int count) {
-		players.Clear();
-		for (int i = 0; i < count; i++)
-			players.Add("");
-	}
-
-	public void LoadNextState() {
-		switch (gameState) {
-			case GameState.PlayerSelect:
-				gameState = GameState.PlayerConfig;
-				break;
-			case GameState.PlayerConfig:
-				gameState = GameState.Storyline;
-				break;
-			case GameState.Storyline:
-				gameState = GameState.PlayerLoop;
-				break;
-			case GameState.PlayerLoop:
-				gameState = GameState.Gameplay;
-				break;
-			case GameState.Gameplay:
-				gameState = GameState.Outcome;
-				break;
-			case GameState.Outcome:
-				gameState = GameState.PlayerSelect;
-				break;
+	public void LoadState(GameState newGameState) {
+		if (gameState == GameState.Storyline && newGameState == GameState.PlayerLoop) {
+			SceneManager.LoadScene("PlayerLoop");
 		}
+		this.gameState = newGameState;
 	}
 
 	private void GeneratePlayerLists() {
@@ -122,7 +96,7 @@ public class GameManager : MonoBehaviour {
 		}
 		else {
 			currentTurn = 0;
-			LoadNextState();
+			//LoadNextState();
 		}
 	}
 
@@ -154,14 +128,14 @@ public class GameManager : MonoBehaviour {
 		return temp;
 	}
 
-	public void ContinueSetPlayers(int players) {
-		LoadNextState();
-	}
-
-	public void ContinuePlayerConfig() {
-		GeneratePlayerLists();
-		LoadNextState();
-	}
+//	public void ContinueSetPlayers(int players) {
+//		LoadNextState();
+//	}
+//
+//	public void ContinuePlayerConfig() {
+//		GeneratePlayerLists();
+//		LoadNextState();
+//	}
 
 	public void ContinueStoryline() {
 
@@ -175,28 +149,6 @@ public class GameManager : MonoBehaviour {
 
 	}
 
-	public void IncrementPlayers(Text numText) {
-		if (players.Count < PROTOTYPE_MAX_PLAYERS) {
-			players.Add("");
-			if (numText)
-				numText.text = players.Count.ToString();
-		}
-		else {
-			Debug.Log("Hit max player cap");
-		}
-	}
-	
-	public void DecrementPlayers(Text numText) {
-		if (players.Count > 1) {
-			players.RemoveAt(players.Count - 1);
-			if (numText)
-				numText.text = players.Count.ToString();
-		}
-		else {
-			Debug.Log("Can't go below one player");
-		}
-	}
-
 	public static GameManager Get() {
 		if (Instance == null) {
 			Instance = Camera.main.gameObject.AddComponent<GameManager>();
@@ -207,8 +159,7 @@ public class GameManager : MonoBehaviour {
 	public string GetPlayer(int index) {
 		if (index < players.Count) {
 			return players[index];
-		}
-		else {
+		} else {
 			Debug.Log("index '" + index + "' out of bounds");
 			return "";
 		}
