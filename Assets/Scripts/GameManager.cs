@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
+
+	public int PROTOTYPE_MAX_PLAYERS = 4;
 
 	public enum GameState {
 		PlayerSelect = 0,
@@ -154,5 +157,27 @@ public class GameManager : MonoBehaviour {
 
 	public void ContinueReadOptions() {
 
+	}
+
+	public void IncrementPlayers(Text numText) {
+		if (players.Count < PROTOTYPE_MAX_PLAYERS) {
+			players.Add("");
+			if (numText)
+				numText.text = players.Count.ToString();
+		}
+		else {
+			Debug.Log("Hit max player cap");
+		}
+	}
+	
+	public void DecrementPlayers(Text numText) {
+		if (players.Count > 1) {
+			players.RemoveAt(players.Count - 1);
+			if (numText)
+				numText.text = players.Count.ToString();
+		}
+		else {
+			Debug.Log("Can't go below one player");
+		}
 	}
 }
