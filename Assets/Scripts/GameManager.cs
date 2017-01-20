@@ -6,7 +6,9 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
-	public int PROTOTYPE_MAX_PLAYERS = 4;
+	public static int PROTOTYPE_MAX_PLAYERS = 4;
+
+	private static GameManager Instance = null;
 
 	public enum GameState {
 		PlayerSelect = 0,
@@ -22,25 +24,46 @@ public class GameManager : MonoBehaviour {
 		ReadOptions = 1
 	}
 
-	public int difficulty = 3;
+	private int difficulty = 3;
 
-	public static GameManager manager;
-	public int currentTurn = 0;
+	//Make sure it can't be made by calling new.
+	protected GameManager() { }
+
+	private int currentTurn = 0;
 	private List<string> players;
-	public List<Option> options;
-	
-
+	private List<Option> options;
 	private GameState gameState;
 	private PlayerLoop playState;
 
-	void Start() {
-		if (players == null)
-			players = new List<string>();
-		if (options == null)
-			options = new List<Option>();
+	public int NumPlayers
+	{
+		get
+		{
+			return players.Count;
+		}
 	}
 
-	void SetPlayer(int id, string input) {
+	void Awake() {
+		if (Instance == null)
+			Instance = this;
+
+		else if (Instance != this)
+			Destroy(gameObject);
+
+		if (players == null)
+			players = new List<string>();
+
+		if (players.Count == 0)
+			players.Add("");
+
+		if (options == null)
+			options = new List<Option>();
+
+		//Set this to not be destroyed when reloading scene
+		DontDestroyOnLoad(gameObject);
+	}
+
+	public void SetPlayer(int id, string input) {
 		if (id < players.Count)
 		players[id] = input;
 		else {
@@ -118,12 +141,6 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public static GameManager Get() {
-		if (!manager)
-			manager = new GameManager();
-		return manager;
-	}
-
 	public Option GenerateUnselectedOption() {
 		Option temp;
 		List<Option> tempOptions = options.Where(n => !n.selected).ToList();
@@ -138,12 +155,11 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void ContinueSetPlayers(int players) {
-		SetNumPlayers(players);
 		LoadNextState();
 	}
 
-	public void ContinuePlayerConfig(List<string> names) {
-		players = names;
+	public void ContinuePlayerConfig() {
+		GeneratePlayerLists();
 		LoadNextState();
 	}
 
@@ -178,6 +194,23 @@ public class GameManager : MonoBehaviour {
 		}
 		else {
 			Debug.Log("Can't go below one player");
+		}
+	}
+
+	public static GameManager Get() {
+		if (Instance == null) {
+			Instance = Camera.main.gameObject.AddComponent<GameManager>();
+		}
+		return Instance;
+	}
+
+	public string GetPlayer(int index) {
+		if (index < players.Count) {
+			return players[index];
+		}
+		else {
+			Debug.Log("index '" + index + "' out of bounds");
+			return "";
 		}
 	}
 }
