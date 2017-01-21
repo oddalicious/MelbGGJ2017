@@ -38,7 +38,7 @@ public class PlayerLoopManager : MonoBehaviour {
 	void Update() {
 		if (currentTime > 0.0f) {
 			currentTime -= Time.deltaTime;
-			timerText.text = currentTime.ToString();
+			timerText.text = currentTime.ToString("N0");
 			if (currentTime <= 0) {
 				timerText.gameObject.SetActive(false);
 				LoadNextPlayer();
