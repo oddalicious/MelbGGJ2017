@@ -28,6 +28,7 @@ public class PlayerLoopManager : MonoBehaviour {
 	void Start () {
 		visibleOptions = new List<GameObject>();
 		GameManager.Get().SetupGame();
+		GameManager.Get().LoadState(GameManager.GameState.PlayerLoop);
 		playersTurn = 0;
 		setPlayerActionText();
 	}
@@ -46,7 +47,7 @@ public class PlayerLoopManager : MonoBehaviour {
 	// Private methods
 
 	private void setPlayerActionText() {
-		playerActionText.text = string.Format("Pass device to {0}", GameManager.Get().GetPlayer(playersTurn));
+		playerActionText.text = string.Format("Pass device to {0}", GameManager.Get().GetPlayerName(playersTurn));
 	}
 
 	private void ShowPlayerLoadScreen() {
@@ -66,7 +67,7 @@ public class PlayerLoopManager : MonoBehaviour {
 			ShowPlayerLoadScreen();
 		}
 		else {
-			//LOAD NEXT SCENE
+			GameManager.Get().LoadState(GameManager.GameState.Gameplay);
 		}
 	}
 
@@ -83,7 +84,7 @@ public class PlayerLoopManager : MonoBehaviour {
 			Vector2 position = new Vector2(100, 200 - (i * 100));
 			var option = Instantiate(optionText, position, Quaternion.identity);
 
-			option.text = string.Format("<color={0}>{1}</color>", hexColours[i % hexColours.Count], GameManager.Get().GetCorrectOptionForPlayer(i, playersTurn).text);
+			option.text = string.Format("<color={0}>{1}</color>", hexColours[i % hexColours.Count], GameManager.Get().GetOptionForPlayerAtIndex(i, playersTurn).text);
 
 			option.transform.SetParent(insetImage.transform, false);
 			visibleOptions.Add(option.gameObject);

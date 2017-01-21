@@ -1,6 +1,7 @@
 ﻿public class Option {
-	public int id;
 	public static int DEFAULT_INDEX = -99;
+
+	public int id;
 	public string text;
 	public bool correctlyChosen = false;
 	public bool onScreen = false;
