@@ -31,6 +31,8 @@ public class GameManager {
 	}
 
 	private int numberOfOptions = 3;
+	public bool soundEffectsEnabled = true;
+	public bool musicEnabled = true;
 
 	public int NumberOfOptions
 	{
