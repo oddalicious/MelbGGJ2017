@@ -36,7 +36,6 @@
 		if (o == null) 
 			return false;
 		
-
 		return (o.id == this.id);
 	}
 }

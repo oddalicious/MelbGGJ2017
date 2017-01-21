@@ -74,7 +74,6 @@ public class SetupManager : MonoBehaviour {
 	public void MoveToStoryMode() {
 		foreach (InputField playerName in nameFields) 
 			GameManager.Get().AddPlayer(playerName.text);
-		
 
 		playerConfigCanvas.gameObject.SetActive(false);
 		introStoryCanvas.gameObject.SetActive(true);

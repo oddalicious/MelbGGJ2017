@@ -58,7 +58,13 @@ public class GameManager {
 	}
 
 	public void AddPlayer(string name) {
-		players.Add(name);
+		if (players != null)
+			players.Add(name);
+	}
+
+	public void RemovePlayer() {
+		if (players != null && players.Count > 0)
+		players.RemoveAt(players.Count - 1);
 	}
 
 	public void LoadState(GameState newGameState) {
@@ -69,7 +75,6 @@ public class GameManager {
 	}
 
 	private void GeneratePlayerLists() {
-
 		ShuffleOptions();
 
 		//Loop through players
@@ -112,18 +117,44 @@ public class GameManager {
 		}
 	}
 
-	public Option GenerateUnselectedOption() {
+	public Option GetAvailableOption() {
 		Option temp;
+		ShuffleOptions();
 		List<Option> tempOptions = options.Where(n => (!n.correctlyChosen && !n.onScreen)).ToList();
-		if (tempOptions.Count > 0) 
+		if (tempOptions.Count == 0) 
 			temp = Option.GenerateEmptyOption();
 		
 		else 
 			temp = tempOptions[UnityEngine.Random.Range(0, tempOptions.Count - 1)];
 		
+		return temp;
+	}
+
+	public Option GetCorrectAvailableOption() {
+		Option temp;
+		ShuffleOptions();
+		List<Option> tempOptions = options.Where(n => (!n.correctlyChosen && !n.onScreen && n.id != Option.DEFAULT_INDEX)).ToList();
+
+		if (tempOptions.Count == 0)
+			temp = Option.GenerateEmptyOption();
+
+		else
+			temp = tempOptions[UnityEngine.Random.Range(0, tempOptions.Count - 1)];
 
 		return temp;
 	}
+
+	public List<Option>GetXAvailableOptions(int x) {
+		List<Option> returnList = new List<Option>();
+		ShuffleOptions();
+		List<Option> tempList = options.Where(n => (!n.correctlyChosen && !n.onScreen)).ToList();
+
+		for (int i = 0; i < x; i++)
+			returnList.Add(tempList[i]);
+
+		return returnList;
+	}
+
 
 	public static GameManager Get() {
 		if (Instance == null) 
