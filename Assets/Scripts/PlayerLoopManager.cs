@@ -27,7 +27,7 @@ public class PlayerLoopManager : MonoBehaviour {
 
 	void Start () {
 		visibleOptions = new List<GameObject>();
-		GameManager.Get().SetupGame();
+		
 		GameManager.Get().LoadState(GameManager.GameState.PlayerLoop);
 		playersTurn = 0;
 		setPlayerActionText();

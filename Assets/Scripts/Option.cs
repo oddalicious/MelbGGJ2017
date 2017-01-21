@@ -8,7 +8,7 @@ public class Option {
 	public bool correctlyChosen = false;
 	public bool onScreen = false;
 	public int playerID = DEFAULT_INDEX;
-	public List<int> positiveCharacters;
+	public int positiveCharacter;
 
 	public static Option GenerateEmptyOption() {
 		Option temp = new Option(0);
@@ -23,11 +23,7 @@ public class Option {
 	}
 
 	public bool isPositiveToCharacter(int inputIndex) {
-		foreach (int characterIndex in positiveCharacters) {
-			if (characterIndex == inputIndex)
-				return true;
-		}
-		return false;
+		return (positiveCharacter == 0 || inputIndex == positiveCharacter);
 	}
 
 	public Option(int id) {
@@ -35,7 +31,13 @@ public class Option {
 		playerID = DEFAULT_INDEX;
 		correctlyChosen = false;
 		onScreen = false;
-		positiveCharacters = new List<int>();
+		positiveCharacter = -1;
+	}
+
+	public void Reset() {
+		correctlyChosen = false;
+		onScreen = false;
+		playerID = DEFAULT_INDEX;
 	}
 
 	//public override bool Equals(object obj) {

@@ -16,6 +16,8 @@ public class SetupManager : MonoBehaviour {
 	private List<InputField> nameFields = new List<InputField>(); //these are generated
 
 	public Canvas introStoryCanvas;
+	public Text introStoryTitle;
+	public Text introStoryText;
 
 
 	// Prefabs
@@ -75,8 +77,10 @@ public class SetupManager : MonoBehaviour {
 		foreach (InputField playerName in nameFields) 
 			GameManager.Get().AddPlayer(playerName.text);
 		playerConfigCanvas.gameObject.SetActive(false);
+		GameManager.Get().SetupGame();
 		introStoryCanvas.gameObject.SetActive(true);
-
+		introStoryTitle.text = CharacterManager.GetCharacterName(GameManager.Get().character);
+		introStoryText.text = CharacterManager.GetCharacterStory(GameManager.Get().character);
 		GameManager.Get().LoadState(GameManager.GameState.Storyline);
 	}
 

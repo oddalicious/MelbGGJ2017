@@ -7,7 +7,6 @@ public class Player {
 	public string name;
 	public int id;
 	public int difficulty = 3;
-	public int character = 0;
 
 	public Player(int id, string name) {
 		this.id = id;

@@ -8,8 +8,8 @@ enum CHARACTERS {
 	RighteousShadow = 3
 }
 
-
 public class CharacterManager {
+	public const int MAX_CHARACTERS = 3;
 	public static string GetCharacterName(int index)
 	{
 		switch (index) {
@@ -21,6 +21,21 @@ public class CharacterManager {
 				return "Fashionista";
 			case 3:
 				return "Righteous Shadow";
+			default:
+				return "How did you get here?";
+		}
+	}
+
+	public static string GetCharacterStory(int index) {
+		switch (index) {
+			case 0:
+				return "YOU'RE GENERIC, GET OVER IT";
+			case 1:
+				return "Boris was a big strong robot";
+			case 2:
+				return "Fashionista was actually really bad at fashion";
+			case 3:
+				return "Righteous Shadow couldn't actually hide";
 			default:
 				return "How did you get here?";
 		}
@@ -42,23 +57,14 @@ public class CharacterManager {
 			case 3:
 				return "RighteousShadow";
 			default: {
-				Debug.Log("You've selected an invalid Character for Filepath");
+				Debug.Log("You've selected an invalid character for Filepath: " + index);
 				return "Not sure what you did here";
 			}
 			
 		}
 	}
-	public static string GetCharacterNegativeFiePath(int index) {
-		switch (index) {
-			case 0:
-				return "BadBoris";
-			case 1:
-				return "BadFashionista";
-			case 2:
-				return "BadRighteousShadow";
-			default:
-				return "";
-		}
+
+	public static int GetRandomCharacter() {
+		return Random.Range(1, MAX_CHARACTERS);
 	}
-}
 }

@@ -38,6 +38,7 @@ public class GameManager {
 	// Public
 	public bool soundEffectsEnabled = true;
 	public bool musicEnabled = true;
+	public int character = 0;
 
 	// Private
 	private static GameManager Instance = null;
@@ -156,7 +157,16 @@ public class GameManager {
 	}
 
 	public void SetupGame() {
-		LoadOptionsFromText();
+		character = CharacterManager.GetRandomCharacter();
+		bool[] characterFlag = new bool[CharacterManager.MAX_CHARACTERS];
+		for (int i = 0; i < CharacterManager.MAX_CHARACTERS; i++)
+			characterFlag[i] = false;
+
+		// Ensure generic answers are loaded
+		LoadOptionsForPlayer(0);
+		// Loop through players
+		LoadOptionsForPlayer(character);
+
 		GeneratePlayerLists();
 	}
 
@@ -252,51 +262,49 @@ public class GameManager {
 		Shuffle<Option>(options);
 
 		//Loop through players
-		int count = 0;
-		for (int i = 0; i < players.Count; i++) {
+		foreach (Player player in players) {
+			List<Option> tempList = options.Where(n => (n.isPositiveToCharacter(character) && n.playerID == Option.DEFAULT_INDEX)).ToList();
 			//loop through difficulty
-			for (int j = 0; j < GetPlayer(i).difficulty; j++) {
+			for (int j = 0; j < player.difficulty; j++) {
 				//Let it know which Player it has
-				options[count].playerID = players[i].id;
-				count++;
+				tempList[j].playerID = player.id;
 			}
 		}
 	}
 
 	private void ResetOptions() {
 		for (int i = 0; i < options.Count; i++) {
-			options[i].playerID = Option.DEFAULT_INDEX;
-			options[i].correctlyChosen = false;
-			options[i].onScreen = false;
+			options[i].Reset();
 		}
 	}
 
-	private bool LoadOptionsFromText(string fileName = "Words") {
+	private void LoadOptionsForPlayer(int characterIndex) {
 		// Handle any problems that might arise when reading the text
+		string fileName = CharacterManager.GetCharacterFilepath(characterIndex);
+		string[] lines = ReadLinesFromTextFile(characterIndex);
+		if (lines.Length > 0) {
+			for (int i = 0; i < lines.Length; i++) {
+				Option temp = Option.GenerateOption(options.Count, lines[i]);
+				temp.positiveCharacter = characterIndex;
+				options.Add(temp);
+				}
+		}
+	}
+
+	private string[] ReadLinesFromTextFile(int characterIndex) {
+		string[] lines = { "" };
+		string fileName = CharacterManager.GetCharacterFilepath(characterIndex);
 		try {
-			string[] lines;
 			TextAsset textAsset = Resources.Load(fileName, typeof(TextAsset)) as TextAsset;
 			if (textAsset) {
-
 				lines = textAsset.text.Split("\n"[0]);
-
-				int count = 0;
-				if (lines.Length > 0) {
-					for (int i = 0; i < lines.Length; i++) {
-						options.Add(Option.GenerateOption(count, lines[i]));
-						count++;
-					}
-				}
-				return true;
 			}
-			return false;
 		}
-		// If anything broke in the try block, we throw an exception with information
-		// on what didn't work
 		catch (Exception e) {
-			Console.WriteLine("{0}\n", e.Message);
-			return false;
+			Debug.Log(e.ToString());
 		}
+
+		return lines;
 	}
 
 	private void Shuffle<T>(List<T> list) {
