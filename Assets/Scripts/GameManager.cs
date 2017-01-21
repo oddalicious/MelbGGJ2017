@@ -130,6 +130,10 @@ public class GameManager {
 		return null;
 	}
 
+	public List<Player> GetPlayers() {
+		return players;
+	}
+
 	//**********************
 	//* Generic
 	//*********************/
@@ -185,6 +189,15 @@ public class GameManager {
 	//**********************
 	//* Options
 	//*********************/
+
+
+	public int NumChosenCorrectAnswersFromPlayer(int playerID) {
+		return options.Where(n => (n.correctlyChosen && n.playerID == playerID)).ToList().Count;
+	}
+
+	public int NumPossibleCorrectAnswersFromPlayer(int playerID) {
+		return options.Where(n => (n.playerID == playerID)).ToList().Count;
+	}
 
 	public Option GetRandomAvailableOption() {
 		Option temp;

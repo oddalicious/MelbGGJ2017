@@ -18,6 +18,7 @@ public class GamePlayManager : MonoBehaviour {
 	public Text timerText;
 
 	public Canvas gameOverCanvas;
+	public Text endGameText;
 
 
 	// Private variables
@@ -64,11 +65,7 @@ public class GamePlayManager : MonoBehaviour {
 				}
 			}
 			if (currentTime <= 0) {
-				SoundManager.Get().playMusic(SoundManager.musicNames.grimMusic);
-				timerText.gameObject.SetActive(false);
-				gamePlayCanvas.gameObject.SetActive(false);
-				//TODO: implement game over!
-				gameOverCanvas.gameObject.SetActive(true);
+				GameOver();
 			}
 		}
 	}
@@ -139,6 +136,7 @@ public class GamePlayManager : MonoBehaviour {
 			}
 		}
 		else {
+			GameOver();
 			//ROUND HAS ENDED
 		}
 
@@ -153,8 +151,10 @@ public class GamePlayManager : MonoBehaviour {
 		if (currentOptions[button].positiveCharacter != Option.DEFAULT_INDEX) {
 			SoundManager.Get().playSoundEffect(SoundManager.SFXNames.correctAnswerSFX);
 			currentOptions[button].correctlyChosen = true;
+			correctAnswers++;
 		} else {
 			SoundManager.Get().playSoundEffect(SoundManager.SFXNames.wrongAnswerSFX);
+			incorrectAnswers++;
 		}
 		ResetButtons();
 	}
@@ -164,5 +164,23 @@ public class GamePlayManager : MonoBehaviour {
 		currentTime = 30;
 		lastTime = (int)currentTime;
 		timerText.gameObject.SetActive(true);
+	}
+
+	private void GameOver() {
+		SoundManager.Get().playMusic(SoundManager.musicNames.grimMusic);
+		timerText.gameObject.SetActive(false);
+		gamePlayCanvas.gameObject.SetActive(false);
+		//TODO: implement game over!
+		gameOverCanvas.gameObject.SetActive(true);
+		string outputText = "";
+		outputText += "Correct Scores: " + correctAnswers + ". Incorrect Answers: " + incorrectAnswers + "\n";
+		float percentage = (float)correctAnswers / (float)incorrectAnswers;
+		outputText += "Total: %" + percentage + "\n";
+		foreach (Player p in GameManager.Get().GetPlayers()) {
+			outputText += "Player " + p.name + "'s score: " + GameManager.Get().NumChosenCorrectAnswersFromPlayer(p.id)
+				+ "/" + GameManager.Get().NumPossibleCorrectAnswersFromPlayer(p.id) + "\n";
+		}
+		endGameText.text = outputText;
+
 	}
 }
