@@ -93,12 +93,14 @@ public class GamePlayManager : MonoBehaviour {
 	 ****************/
 	public void Reset() {
 		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
+		GameManager.Get().rememberPlayers = true;
 		GameManager.Get().Reset();
 		SceneManager.LoadScene("GameSetup");
 	}
 
 	public void Quit() {
 		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
+		GameManager.Get().rememberPlayers = false;
 		GameManager.Get().Quit();
 		SceneManager.LoadScene("Title");
 	}

@@ -24,6 +24,8 @@ public class SetupManager : MonoBehaviour {
 
 	public InputField playerNameInputField;
 
+	private List<Player> tempPlayerList;
+
 
 
 	// Common methods
@@ -33,6 +35,10 @@ public class SetupManager : MonoBehaviour {
 			Debug.Log("NO PLAYERNUMBERS CANVAS DETECTED!");
 		if (playerConfigCanvas == null)
 			Debug.Log("NO PLAYERCONFIG CANVAS DETECTED!");
+		if (GameManager.Get().rememberPlayers) {
+			numberOfPlayersText.text = GameManager.Get().NumPlayers.ToString();
+			tempPlayerList = GameManager.Get().GetPlayers();
+		}
 	}
 
 
@@ -73,7 +79,12 @@ public class SetupManager : MonoBehaviour {
 			var newField = Instantiate(playerNameInputField, new Vector2(0, 625 - (i * 120)), Quaternion.identity);
 			newField.transform.SetParent(bottomArea.transform, false);			
 			nameFields.Add(newField);
+			//If the playerList is not null, The Game has to have been set to remember players.
+			if (tempPlayerList != null && i < tempPlayerList.Count) {
+				newField.text = tempPlayerList[i].name;
+			}
 		}
+		GameManager.Get().ClearPlayers();
 	}
 
 	public void MoveToStoryMode() {

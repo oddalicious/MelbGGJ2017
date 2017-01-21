@@ -39,12 +39,14 @@ public class GameManager {
 	public bool soundEffectsEnabled = true;
 	public bool musicEnabled = true;
 	public int character = 0;
+	public bool rememberPlayers = false;
 
 	// Private
 	private static GameManager Instance = null;
 	private List<Player> players;
 	private List<Option> options;
 	private GameState gameState;
+	
 
 	//***************************************************************
 	//* Accessors
@@ -66,14 +68,6 @@ public class GameManager {
 	protected GameManager() {
 		if (players == null)
 			players = new List<Player>();
-
-		//TODO: remove this, its just for testing the PlayerLoop scene
-
-		if (Application.isEditor) {
-			//AddPlayer("playerOne", 6);
-			//AddPlayer("playerTwo");
-		}
-		
 
 		if (options == null)
 			options = new List<Option>();
@@ -134,6 +128,13 @@ public class GameManager {
 		return players;
 	}
 
+	public void ClearPlayers() {
+		for (int i = 0; i < players.Count; i++) {
+			players[i] = null;
+		}
+		players.Clear();
+	}
+
 	//**********************
 	//* Generic
 	//*********************/
@@ -156,8 +157,10 @@ public class GameManager {
 	}
 
 	public void Reset() {
-		ResetOptions();
+		ClearOptions();
 		gameState = GameState.Storyline;
+		if (!rememberPlayers)
+			ClearPlayers();
 	}
 
 	public void SetupGame() {
@@ -175,14 +178,8 @@ public class GameManager {
 	}
 
 	public void Quit() {
-		for (int i = 0; i < players.Count; i++) {
-			players[i] = null;
-		}
-		players.Clear();
-		for (int i = 0; i < options.Count; i++) {
-			options[i] = null;
-		}
-		options.Clear();
+		ClearPlayers();
+		ClearOptions();
 		gameState = GameState.PlayerSelect;
 	}
 
@@ -289,6 +286,13 @@ public class GameManager {
 		for (int i = 0; i < options.Count; i++) {
 			options[i].Reset();
 		}
+	}
+
+	private void ClearOptions() {
+		for (int i = 0; i < options.Count; i++) {
+			options[i] = null;
+		}
+		options.Clear();
 	}
 
 	private void LoadOptionsForPlayer(int characterIndex) {
