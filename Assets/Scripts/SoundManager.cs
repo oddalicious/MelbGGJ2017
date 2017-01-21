@@ -105,7 +105,7 @@ public class SoundManager : MonoBehaviour {
 		if (GameManager.Get().soundEffectsEnabled) {
 			AudioSource source = soundEffectsSource.GetComponentInChildren<AudioSource>();
 
-			var music = Resources.Load(string.Format("Music/SFX/{0}", musicList[sfxName.ToString()]), typeof(AudioClip)) as AudioClip;
+			var music = Resources.Load(string.Format("Music/SFX/{0}", soundEffectsList[sfxName.ToString()]), typeof(AudioClip)) as AudioClip;
 			source.clip = music;
 
 			source.Play();

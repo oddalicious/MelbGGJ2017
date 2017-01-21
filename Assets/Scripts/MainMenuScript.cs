@@ -10,6 +10,7 @@ public class MainMenuScript : MonoBehaviour {
 	}
 
 	public void PlayGame() {
+		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
 		SceneManager.LoadScene("GameSetup");
 	}
 
