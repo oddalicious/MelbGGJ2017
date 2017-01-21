@@ -9,6 +9,15 @@ public class SoundManager : MonoBehaviour {
 	private Dictionary<string, string> soundEffectsList;
 
 	// Public variables
+
+	public static SoundManager instance = null;
+
+	public GameObject musicSource;
+	public GameObject soundEffectsSource;
+
+
+	// Enums
+
 	public enum musicNames {
 		elevatorMusic,
 		upbeatMusic,
@@ -34,31 +43,73 @@ public class SoundManager : MonoBehaviour {
 		setupSoundEffects();
 	}
 
+	void Awake () {
+		//Check if there is already an instance of SoundManager
+		if (instance == null)
+			//if not, set it to this.
+			instance = this;
+		//If instance already exists:
+		else if (instance != this)
+			//Destroy this, this enforces our singleton pattern so there can only be one instance of SoundManager.
+			Destroy (gameObject);
+
+		//Set SoundManager to DontDestroyOnLoad so that it won't be destroyed when reloading our scene.
+		DontDestroyOnLoad (gameObject);
+	}
+
 
 	// Private methods
 	private void setupMusic() {
 		musicList = new Dictionary<string, string>();
 
-		musicList[musicNames.elevatorMusic.ToString()] = "01.mp3";
-		musicList[musicNames.upbeatMusic.ToString()] = "02.mp3";
-		musicList[musicNames.grimMusic.ToString()] = "03.mp3";
-		musicList[musicNames.fastPaceMusic.ToString()] = "04.mp3";
+		musicList[musicNames.elevatorMusic.ToString()] = "01";
+		musicList[musicNames.upbeatMusic.ToString()] = "02";
+		musicList[musicNames.grimMusic.ToString()] = "03";
+		musicList[musicNames.fastPaceMusic.ToString()] = "04";
 	}
 
 	private void setupSoundEffects() {
 		soundEffectsList = new Dictionary<string, string>();
 
-		soundEffectsList[SFXNames.incrementOrDecrementSFX.ToString()] = "01incOrDecPlayerCount.ogg";
-		soundEffectsList[SFXNames.correctAnswerSFX.ToString()] = "02correct.ogg";
-		soundEffectsList[SFXNames.gameOverFailSFX.ToString()] = "03gameOverFail.ogg";
-		soundEffectsList[SFXNames.gameOverSuccessSFX.ToString()] = "04gameOverSuccess.ogg";
-		soundEffectsList[SFXNames.timerUrgentSFX.ToString()] = "05timerUrgent.ogg";
-		soundEffectsList[SFXNames.buttonTapSFX.ToString()] = "06buttonTap.ogg";
-		soundEffectsList[SFXNames.timerNormalSFX.ToString()] = "07timerNormal.ogg";
-		soundEffectsList[SFXNames.wrongAnswerSFX.ToString()] = "08wrong.ogg";
+		soundEffectsList[SFXNames.incrementOrDecrementSFX.ToString()] = "01incOrDecPlayerCount";
+		soundEffectsList[SFXNames.correctAnswerSFX.ToString()] = "02correct";
+		soundEffectsList[SFXNames.gameOverFailSFX.ToString()] = "03gameOverFail";
+		soundEffectsList[SFXNames.gameOverSuccessSFX.ToString()] = "04gameOverSuccess";
+		soundEffectsList[SFXNames.timerUrgentSFX.ToString()] = "05timerUrgent";
+		soundEffectsList[SFXNames.buttonTapSFX.ToString()] = "06buttonTap";
+		soundEffectsList[SFXNames.timerNormalSFX.ToString()] = "07timerNormal";
+		soundEffectsList[SFXNames.wrongAnswerSFX.ToString()] = "08wrong";
 	}
 
+	// Public methods
+	public static SoundManager Get() {
+		if (instance == null)
+			instance = new SoundManager();
 
+		return instance;
+	}
 
+	public void playMusic(musicNames musicName) {
+		Debug.Log(string.Format("here, music name is {0}", musicName));
+		if (GameManager.Get().musicEnabled) {
+			AudioSource source = musicSource.GetComponentInChildren<AudioSource>();
+
+			var music = Resources.Load(string.Format("Music/Music/{0}", musicList[musicName.ToString()]), typeof(AudioClip)) as AudioClip;
+			source.clip = music;
+
+			source.Play();
+		}
+	}
+
+	public void playSoundEffect(SFXNames sfxName) {
+		if (GameManager.Get().soundEffectsEnabled) {
+			AudioSource source = soundEffectsSource.GetComponentInChildren<AudioSource>();
+
+			var music = Resources.Load(string.Format("Music/SFX/{0}", musicList[sfxName.ToString()]), typeof(AudioClip)) as AudioClip;
+			source.clip = music;
+
+			source.Play();
+		}
+	}
 
 }

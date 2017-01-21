@@ -5,6 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuScript : MonoBehaviour {
 
+	void Start() {
+		SoundManager.Get().playMusic(SoundManager.musicNames.elevatorMusic);
+	}
+
 	public void PlayGame() {
 		SceneManager.LoadScene("GameSetup");
 	}
