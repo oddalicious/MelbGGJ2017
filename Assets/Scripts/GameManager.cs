@@ -257,9 +257,32 @@ public class GameManager {
 	}
 
 	public int GetRandomUnfinishedPlayer() {
-		Shuffle<Player>(players);
-		int playerIndex = UnityEngine.Random.Range(0, players.Count);
+		List<Player> tempList = new List<Player>();
+		foreach (Player p in players) {
+			tempList.Add(p);
+		}
+		Shuffle<Player>(tempList);
+		int randomIndex = 0;
+		randomIndex = UnityEngine.Random.Range(0, tempList.Count - 1);
+		int playerIndex = tempList[randomIndex].id;
 		int count = GetNumberAvailableOptionsForPlayer(playerIndex);
+		if (count == 0) {
+			tempList.RemoveAt(randomIndex);
+
+			do {
+				try {
+					randomIndex = UnityEngine.Random.Range(0, tempList.Count - 1);
+					playerIndex = tempList[randomIndex].id;
+					count = GetNumberAvailableOptionsForPlayer(playerIndex);
+					tempList.RemoveAt(randomIndex);
+				}
+				catch (Exception e) {
+					Debug.Log("INVALID INDEX WHEN GRABBING RANDOM PLAYER. \n" + e.ToString());
+					return Option.DEFAULT_INDEX;
+				}
+			} while (tempList.Count > 0 && count == 0);
+			
+		}
 
 		return (count > 0) ? playerIndex : Option.DEFAULT_INDEX;
 	}

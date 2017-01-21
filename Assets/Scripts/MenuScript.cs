@@ -9,11 +9,16 @@ public class MenuScript : MonoBehaviour {
 	public bool options = false;
 	public Toggle musicToggle;
 	public Toggle soundEffectToggle;
+	public bool mainMenu = false;
+	public Button backButton;
 
 	void Start() {
 		if (options) {
 			musicToggle.isOn = SoundManager.instance.getMusicEnabled();
 			soundEffectToggle.isOn = SoundManager.instance.getSoundEffectEnabled();
+		}
+		if (mainMenu && Application.isMobilePlatform) {
+			backButton.gameObject.SetActive(false);
 		}
 		SoundManager.Get().playMusic(SoundManager.musicNames.elevatorMusic);
 	}
