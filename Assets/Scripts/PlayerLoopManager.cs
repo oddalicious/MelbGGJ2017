@@ -19,7 +19,7 @@ public class PlayerLoopManager : MonoBehaviour {
 	// Private variables
 
 	private int playersTurn;
-	private float currentTime = 0.0f;
+	private float currentTime = 5.0f;
 
 	private List<string> hexColours = new List<string> {"#f1c40f", "#2ecc71", "#3498db", "#9b59b6", "#e67e22", "#1abc9c", "#e74c3c"};
 
@@ -79,7 +79,7 @@ public class PlayerLoopManager : MonoBehaviour {
 
 		Image insetImage = optionsCanvas.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name == "InsetImage");
 
-		int maxOptions = GameManager.Get().NumberOfOptions;
+		int maxOptions = GameManager.Get().GetPlayerDifficuty(playersTurn);
 		for (int i = 0; i < maxOptions; i++) {
 			Vector2 position = new Vector2(100, 200 - (i * 100));
 			var option = Instantiate(optionText, position, Quaternion.identity);

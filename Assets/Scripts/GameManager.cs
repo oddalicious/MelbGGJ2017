@@ -41,7 +41,6 @@ public class GameManager {
 
 	// Private
 	private static GameManager Instance = null;
-	private int numberOfOptions = 3;
 	private List<Player> players;
 	private List<Option> options;
 	private GameState gameState;
@@ -49,13 +48,6 @@ public class GameManager {
 	//***************************************************************
 	//* Accessors
 	//*************************************************************/
-	public int NumberOfOptions
-	{
-		get
-		{
-			return numberOfOptions;
-		}
-	}
 
 	public int NumPlayers
 	{
@@ -75,8 +67,12 @@ public class GameManager {
 			players = new List<Player>();
 
 		//TODO: remove this, its just for testing the PlayerLoop scene
-		AddPlayer("playerOne");
-		AddPlayer("playerTwo");	
+
+		if (Application.isEditor) {
+			//AddPlayer("playerOne", 6);
+			//AddPlayer("playerTwo");
+		}
+		
 
 		if (options == null)
 			options = new List<Option>();
@@ -90,14 +86,23 @@ public class GameManager {
 	//* Player Data
 	//*********************/
 
-	public void AddPlayer(string name) {
+	public void AddPlayer(string name, int difficulty = 3) {
 		if (players != null)
-			players.Add(new Player (players.Count, name));
+			players.Add(new Player (players.Count, name, difficulty));
 	}
 
 	public void RemovePlayer() {
 		if (players != null && players.Count > 0)
 		players.RemoveAt(players.Count - 1);
+	}
+
+	public int GetPlayerDifficuty(int id) {
+		int difficulty = 3;
+		foreach (Player p in players) {
+			if (p.id == id)
+				return p.difficulty;
+		}
+		return difficulty;
 	}
 
 	public string GetPlayerName(int id) {
@@ -131,7 +136,7 @@ public class GameManager {
 	public void LoadState(GameState newGameState) {	
 		if (gameState == GameState.Storyline && newGameState == GameState.PlayerLoop) 
 			SceneManager.LoadScene("PlayerLoop");
-		else if (gameState == GameState.PlayerLoop) {
+		else if (gameState == GameState.PlayerLoop && newGameState == GameState.Gameplay) {
 			SceneManager.LoadScene("Game");
 		}
 		this.gameState = newGameState;
@@ -156,7 +161,15 @@ public class GameManager {
 	}
 
 	public void Quit() {
-
+		for (int i = 0; i < players.Count; i++) {
+			players[i] = null;
+		}
+		players.Clear();
+		for (int i = 0; i < options.Count; i++) {
+			options[i] = null;
+		}
+		options.Clear();
+		gameState = GameState.PlayerSelect;
 	}
 
 	//**********************
@@ -242,7 +255,7 @@ public class GameManager {
 		int count = 0;
 		for (int i = 0; i < players.Count; i++) {
 			//loop through difficulty
-			for (int j = 0; j < numberOfOptions; j++) {
+			for (int j = 0; j < GetPlayer(i).difficulty; j++) {
 				//Let it know which Player it has
 				options[count].playerID = players[i].id;
 				count++;

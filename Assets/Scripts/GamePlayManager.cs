@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class GamePlayManager : MonoBehaviour {
 
@@ -37,15 +38,16 @@ public class GamePlayManager : MonoBehaviour {
 	// Common methods
 
 	void Start() {
+		
 		this.correctAnswers = 0;
 		this.incorrectAnswers = 0;
 		this.answerButtons = new List<Button>();
 		this.currentOptions = new List<Option>();
 		//TODO: maybe display a counter initially + some text telling players to place the phone in the centre, then call this..
 		GenerateButtons();
-		
 
 		startTimer();
+
 	}
 
 	void Update() {
@@ -59,6 +61,19 @@ public class GamePlayManager : MonoBehaviour {
 				gameOverCanvas.gameObject.SetActive(true);
 			}
 		}
+	}
+
+	/*****************
+	 * Generic
+	 ****************/
+	public void Reset() {
+		GameManager.Get().Reset();
+		SceneManager.LoadScene("GameSetup");
+	}
+
+	public void Quit() {
+		GameManager.Get().Quit();
+		SceneManager.LoadScene("Title");
 	}
 
 	public void ResetButtons() {
