@@ -8,6 +8,34 @@ public class SoundManager : MonoBehaviour {
 	private Dictionary<string, string> musicList;
 	private Dictionary<string, string> soundEffectsList;
 
+	// Public variables
+
+	public static SoundManager instance = null;
+
+	public GameObject musicSource;
+	public GameObject soundEffectsSource;
+
+
+	// Enums
+
+	public enum musicNames {
+		elevatorMusic,
+		upbeatMusic,
+		grimMusic,
+		fastPaceMusic
+	}
+
+	public enum SFXNames {
+		incrementOrDecrementSFX,
+		correctAnswerSFX,
+		gameOverFailSFX,
+		gameOverSuccessSFX,
+		timerUrgentSFX,
+		buttonTapSFX,
+		timerNormalSFX,
+		wrongAnswerSFX
+	}
+
 
 	// Common methods
 	void Start() {
@@ -15,28 +43,83 @@ public class SoundManager : MonoBehaviour {
 		setupSoundEffects();
 	}
 
+	void Awake () {
+		//Check if there is already an instance of SoundManager
+		if (instance == null)
+			//if not, set it to this.
+			instance = this;
+		//If instance already exists:
+		else if (instance != this)
+			//Destroy this, this enforces our singleton pattern so there can only be one instance of SoundManager.
+			Destroy (gameObject);
+
+		//Set SoundManager to DontDestroyOnLoad so that it won't be destroyed when reloading our scene.
+		DontDestroyOnLoad (gameObject);
+	}
+
 
 	// Private methods
 	private void setupMusic() {
 		musicList = new Dictionary<string, string>();
 
-		musicList["elevatorMusic"] = "01.mp3";
-		musicList["upbeatMusic"] = "02.mp3";
-		musicList["grimMusic"] = "03.mp3";
-		musicList["fastPaceMusic"] = "04.mp3";
+		musicList[musicNames.elevatorMusic.ToString()] = "01";
+		musicList[musicNames.upbeatMusic.ToString()] = "02";
+		musicList[musicNames.grimMusic.ToString()] = "03";
+		musicList[musicNames.fastPaceMusic.ToString()] = "04";
 	}
 
 	private void setupSoundEffects() {
 		soundEffectsList = new Dictionary<string, string>();
 
-		soundEffectsList["incrementOrDecrementSFX"] = "01incOrDecPlayerCount.ogg";
-		soundEffectsList["correctAnswerSFX"] = "02correct.ogg";
-		soundEffectsList["gameOverFailSFX"] = "03gameOverFail.ogg";
-		soundEffectsList["gameOverSuccessSFX"] = "04gameOverSuccess.ogg";
-		soundEffectsList["timerUrgentSFX"] = "05timerUrgent.ogg";
-		soundEffectsList["buttonTapSFX"] = "06buttonTap.ogg";
-		soundEffectsList["timerNormalSFX"] = "07timerNormal.ogg";
-		soundEffectsList["wrongAnswerSFX"] = "08wrong.ogg";
+		soundEffectsList[SFXNames.incrementOrDecrementSFX.ToString()] = "01incOrDecPlayerCount";
+		soundEffectsList[SFXNames.correctAnswerSFX.ToString()] = "02correct";
+		soundEffectsList[SFXNames.gameOverFailSFX.ToString()] = "03gameOverFail";
+		soundEffectsList[SFXNames.gameOverSuccessSFX.ToString()] = "04gameOverSuccess";
+		soundEffectsList[SFXNames.timerUrgentSFX.ToString()] = "05timerUrgent";
+		soundEffectsList[SFXNames.buttonTapSFX.ToString()] = "06buttonTap";
+		soundEffectsList[SFXNames.timerNormalSFX.ToString()] = "07timerNormal";
+		soundEffectsList[SFXNames.wrongAnswerSFX.ToString()] = "08wrong";
+	}
+
+	// Public methods
+	public static SoundManager Get() {
+		if (instance == null)
+			instance = new SoundManager();
+
+		return instance;
+	}
+
+	public void playMusic(musicNames musicName) {
+		Debug.Log(string.Format("here, music name is {0}", musicName));
+		if (GameManager.Get().musicEnabled) {
+			AudioSource source = musicSource.GetComponentInChildren<AudioSource>();
+
+			var music = Resources.Load(string.Format("Music/Music/{0}", musicList[musicName.ToString()]), typeof(AudioClip)) as AudioClip;
+			source.clip = music;
+
+			source.Play();
+		}
+	}
+
+	public void playSoundEffect(SFXNames sfxName) {
+		if (GameManager.Get().soundEffectsEnabled) {
+			AudioSource source = soundEffectsSource.GetComponentInChildren<AudioSource>();
+
+			var music = Resources.Load(string.Format("Music/SFX/{0}", soundEffectsList[sfxName.ToString()]), typeof(AudioClip)) as AudioClip;
+			source.clip = music;
+
+			source.Play();
+		}
+	}
+
+	public void stopMusic() {
+		AudioSource source = musicSource.GetComponentInChildren<AudioSource>();
+		source.Stop();
+	}
+
+	public void stopSoundEffect() {
+		AudioSource source = soundEffectsSource.GetComponentInChildren<AudioSource>();
+		source.Stop();
 	}
 
 }

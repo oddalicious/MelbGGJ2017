@@ -5,7 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuScript : MonoBehaviour {
 
+	void Start() {
+		SoundManager.Get().playMusic(SoundManager.musicNames.elevatorMusic);
+	}
+
 	public void PlayGame() {
+		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
 		SceneManager.LoadScene("GameSetup");
 	}
 
