@@ -53,10 +53,11 @@ public class PlayerLoopManager : MonoBehaviour {
 	}
 
 	private void ShowPlayerLoadScreen() {
-		foreach (GameObject option in visibleOptions) {
+
+		foreach (GameObject option in visibleOptions) 
 			Destroy(option);
-		}
 		visibleOptions.Clear();
+
 		passDeviceCanvas.gameObject.SetActive(true);
 		optionsCanvas.gameObject.SetActive(false);
 		setPlayerActionText();
