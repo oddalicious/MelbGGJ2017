@@ -85,20 +85,33 @@ public class PlayerLoopManager : MonoBehaviour {
 		passDeviceCanvas.gameObject.SetActive(false);
 		optionsCanvas.gameObject.SetActive(true);
 
-		Image insetImage = optionsCanvas.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name == "InsetImage");
+		Image answerArea = optionsCanvas.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name == "AnswerArea");
+
+		string allOptions = "";
 
 		int maxOptions = GameManager.Get().GetPlayerDifficuty(playersTurn);
+		var previousRandomColours = new List<int>();
 		for (int i = 0; i < maxOptions; i++) {
-			Vector2 position = new Vector2(100, 200 - (i * 100));
-			var option = Instantiate(optionText, position, Quaternion.identity);
-			option.text = string.Format("<color={0}>{1}</color>", hexColours[i % hexColours.Count], GameManager.Get().GetOptionForPlayerAtIndex(i, playersTurn).text);
-
-			option.transform.SetParent(insetImage.transform, false);
-			visibleOptions.Add(option.gameObject);
-			currentTime = timeToView;
-			lastTime = (int)timeToView;
-			timerText.gameObject.SetActive(true);
+			var randomIndexOfColour = Random.Range(0, hexColours.Count);
+			while (previousRandomColours.Contains(randomIndexOfColour)) {
+				randomIndexOfColour = Random.Range(0, hexColours.Count);
+			}
+			previousRandomColours.Add(randomIndexOfColour);
+			if (i > 0) {
+				allOptions = string.Format("{0}\n\n<color={1}>{2}</color>", allOptions, hexColours[randomIndexOfColour], GameManager.Get().GetOptionForPlayerAtIndex(i, playersTurn).text);
+			} else {
+				allOptions = string.Format("<color={0}>{1}</color>", hexColours[randomIndexOfColour], GameManager.Get().GetOptionForPlayerAtIndex(i, playersTurn).text);
+			}
 		}
+
+		var option = Instantiate(optionText, new Vector2(0, 0), Quaternion.identity);
+		option.text = allOptions;
+
+		option.transform.SetParent(answerArea.transform, false);
+		visibleOptions.Add(option.gameObject);
+		currentTime = timeToView;
+		lastTime = (int)timeToView;
+		timerText.gameObject.SetActive(true);
 
 	}
 }

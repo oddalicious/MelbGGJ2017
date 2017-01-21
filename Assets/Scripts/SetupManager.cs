@@ -68,10 +68,10 @@ public class SetupManager : MonoBehaviour {
 
 		GameManager.Get().LoadState(GameManager.GameState.PlayerConfig);
 
-		Image insetImage = playerConfigCanvas.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name == "InsetImage");
+		Image bottomArea = playerConfigCanvas.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name == "BottomArea");
 		for (int i = 0; i < int.Parse(numberOfPlayersText.text); i++) {
-			var newField = Instantiate(playerNameInputField, new Vector2(insetImage.transform.position.x, 80 - (i * 75)), Quaternion.identity);
-			newField.transform.SetParent(insetImage.transform, false);			
+			var newField = Instantiate(playerNameInputField, new Vector2(0, 625 - (i * 120)), Quaternion.identity);
+			newField.transform.SetParent(bottomArea.transform, false);			
 			nameFields.Add(newField);
 		}
 	}

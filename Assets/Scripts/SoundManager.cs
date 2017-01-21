@@ -90,7 +90,6 @@ public class SoundManager : MonoBehaviour {
 	}
 
 	public void playMusic(musicNames musicName) {
-		Debug.Log(string.Format("here, music name is {0}", musicName));
 		if (GameManager.Get().musicEnabled) {
 			AudioSource source = musicSource.GetComponentInChildren<AudioSource>();
 

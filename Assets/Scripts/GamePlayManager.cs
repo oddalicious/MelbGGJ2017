@@ -120,7 +120,7 @@ public class GamePlayManager : MonoBehaviour {
 	// Private methods
 
 	private void GenerateButtons() {
-		var outsetImage = gamePlayCanvas.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name == "OutsetImage");
+		var outsetImage = gamePlayCanvas.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name == "AnswerArea");
 		int playerIndex = GameManager.Get().GetRandomUnfinishedPlayer();
 		//Ensure at least one option is correct
 		int correctButton = Random.Range(0, ANSWERS_TO_DISPLAY);
@@ -141,7 +141,7 @@ public class GamePlayManager : MonoBehaviour {
 				currentOptions.Add(temp);
 			}
 			for (int i = 0; i < ANSWERS_TO_DISPLAY; i++) {
-				var position = new Vector2(0, 200 - (i * 100));
+				var position = new Vector2(0, -50 - (i * 125));
 				var newButton = Instantiate(answerButtonPrefab, position, Quaternion.identity);
 				newButton.transform.SetParent(outsetImage.transform, false);
 				//TODO: actually update with one of the possible incorrect/correct answers
@@ -197,6 +197,8 @@ public class GamePlayManager : MonoBehaviour {
 	}
 
 	private void GameOver() {
+		currentTime = 0;
+		lastTime = 0;
 		SoundManager.Get().playMusic(SoundManager.musicNames.grimMusic);
 		timerText.gameObject.SetActive(false);
 		gamePlayCanvas.gameObject.SetActive(false);
@@ -206,7 +208,7 @@ public class GamePlayManager : MonoBehaviour {
 		outputText += "Correct Scores: " + correctAnswers + ". Incorrect Answers: " + incorrectAnswers + "\n";
 		float percentage = (float)correctAnswers / (float)((float)incorrectAnswers + (float)correctAnswers);
 		percentage *= 100;
-		outputText += "Total: %" + percentage + "\n";
+		outputText += "Total: " + (int)percentage + "%\n";
 		int outcome = 0;
 		if (percentage >= 80) {
 			outcome = 4;
