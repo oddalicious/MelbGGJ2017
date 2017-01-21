@@ -112,4 +112,14 @@ public class SoundManager : MonoBehaviour {
 		}
 	}
 
+	public void stopMusic() {
+		AudioSource source = musicSource.GetComponentInChildren<AudioSource>();
+		source.Stop();
+	}
+
+	public void stopSoundEffect() {
+		AudioSource source = soundEffectsSource.GetComponentInChildren<AudioSource>();
+		source.Stop();
+	}
+
 }

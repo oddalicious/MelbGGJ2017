@@ -37,6 +37,7 @@ public class SetupManager : MonoBehaviour {
 	// Button actions methods
 
 	public void IncrementPlayers(Text numText) {
+		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.incrementOrDecrementSFX);
 		int numberOfPlayers = int.Parse(numberOfPlayersText.text);
 		if (numberOfPlayers < GameManager.MAX_PLAYERS) {
 			numberOfPlayers++;
@@ -44,6 +45,7 @@ public class SetupManager : MonoBehaviour {
 		}
 	}
 	public void DecrementPlayers(Text numText) {
+		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.incrementOrDecrementSFX);
 		int numberOfPlayers = int.Parse(numberOfPlayersText.text);
 		if (numberOfPlayers > GameManager.MIN_PLAYERS) {
 			numberOfPlayers--;
@@ -56,6 +58,7 @@ public class SetupManager : MonoBehaviour {
 	// Game State management methods
 
 	public void MoveToPlayerConfig() {
+		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
 		if (playerNumbersCanvas) 
 			playerNumbersCanvas.gameObject.SetActive(false);
 		if (playerConfigCanvas)
@@ -72,6 +75,7 @@ public class SetupManager : MonoBehaviour {
 	}
 
 	public void MoveToStoryMode() {
+		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
 		foreach (InputField playerName in nameFields) 
 			GameManager.Get().AddPlayer(playerName.text);
 		playerConfigCanvas.gameObject.SetActive(false);
@@ -81,6 +85,8 @@ public class SetupManager : MonoBehaviour {
 	}
 
 	public void StartGame() {
+		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
+		SoundManager.Get().stopMusic();
 		GameManager.Get().LoadState(GameManager.GameState.PlayerLoop);
 	}
 }
