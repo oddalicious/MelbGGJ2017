@@ -20,6 +20,11 @@ public class GamePlayManager : MonoBehaviour {
 	public Canvas gameOverCanvas;
 	public Text endGameText;
 
+	public Color goodColor = Color.green;
+	public Color badColor = Color.red;
+
+	public float buttonFadeTime = .25f;
+
 
 	// Private variables
 
@@ -31,7 +36,8 @@ public class GamePlayManager : MonoBehaviour {
 
 	private float currentTime = 0.0f;
 	private int lastTime = 0;
-
+	private bool buttonFade;
+	private float buttonFadeCD;
 
 	//TODO: delete this once we generate from the previous scenes the answers/incorrect answers..
 	//private List<string> options = new List<string> {"Hug her!", "Do a cool dance", "Sleep", "Do some programming", "Watch TV"};
@@ -53,7 +59,19 @@ public class GamePlayManager : MonoBehaviour {
 	}
 
 	void Update() {
-		if (currentTime > 0.0f) {
+		if (buttonFade) {
+			buttonFadeCD -= Time.deltaTime;
+			foreach(Button button in answerButtons) {
+				Color fadeColor = button.colors.highlightedColor;
+				fadeColor.a *= Time.deltaTime * 2.5f * -1; // decrement so it takes .25s to fade out
+				button.colors = SetColorBlock(button.colors, fadeColor);
+			}
+			if (buttonFadeCD <= 0.0f) {
+				buttonFade = false;
+				ResetButtons();
+			}
+		}
+		else if (currentTime > 0.0f) {
 			currentTime -= Time.deltaTime;
 			timerText.text = currentTime.ToString("N0");
 			if (int.Parse(timerText.text) != lastTime) {
@@ -154,15 +172,21 @@ public class GamePlayManager : MonoBehaviour {
 
 	//BUTTON STUFF
 	void ButtonPress(int button) {
-		if (currentOptions[button].positiveCharacter != Option.DEFAULT_INDEX) {
+		if (currentOptions[button].playerID >= 0) {
 			SoundManager.Get().playSoundEffect(SoundManager.SFXNames.correctAnswerSFX);
 			currentOptions[button].correctlyChosen = true;
+			answerButtons[button].colors = SetColorBlock(answerButtons[button].colors, goodColor);
 			correctAnswers++;
 		} else {
 			SoundManager.Get().playSoundEffect(SoundManager.SFXNames.wrongAnswerSFX);
+			answerButtons[button].colors = SetColorBlock(answerButtons[button].colors, badColor);
 			incorrectAnswers++;
 		}
-		ResetButtons();
+		foreach (Button b in answerButtons) {
+			b.onClick.RemoveAllListeners();
+		}
+		buttonFade = true;
+		buttonFadeCD = buttonFadeTime;
 	}
 
 	private void startTimer() {
@@ -180,13 +204,35 @@ public class GamePlayManager : MonoBehaviour {
 		gameOverCanvas.gameObject.SetActive(true);
 		string outputText = "";
 		outputText += "Correct Scores: " + correctAnswers + ". Incorrect Answers: " + incorrectAnswers + "\n";
-		float percentage = (float)correctAnswers / (float)incorrectAnswers;
+		float percentage = (float)correctAnswers / (float)((float)incorrectAnswers + (float)correctAnswers);
+		percentage *= 100;
 		outputText += "Total: %" + percentage + "\n";
+		int outcome = 0;
+		if (percentage >= 80) {
+			outcome = 4;
+		}
+		else if( percentage >= 60) {
+			outcome = 3;
+		}
+		else if (percentage >= 40) {
+			outcome = 2;
+		}
+		else if (percentage >= 20) {
+			outcome = 1;
+		}
+
 		foreach (Player p in GameManager.Get().GetPlayers()) {
 			outputText += "Player " + p.name + "'s score: " + GameManager.Get().NumChosenCorrectAnswersFromPlayer(p.id)
 				+ "/" + GameManager.Get().NumPossibleCorrectAnswersFromPlayer(p.id) + "\n";
 		}
+		outputText += "\n" + CharacterManager.GetCharacterOutcome(GameManager.Get().character, outcome);
 		endGameText.text = outputText;
+	}
 
+	ColorBlock SetColorBlock (ColorBlock block, Color c) {
+		block.highlightedColor = c;
+		block.normalColor = c;
+		block.pressedColor = c;
+		return block;
 	}
 }

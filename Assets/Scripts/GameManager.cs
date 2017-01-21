@@ -305,7 +305,7 @@ public class GameManager {
 
 	private string[] ReadLinesFromTextFile(int characterIndex) {
 		string[] lines = { "" };
-		string fileName = CharacterManager.GetCharacterFilepath(characterIndex);
+		string fileName = CharacterManager.GetCharacterOptionsFilepath(characterIndex);
 		try {
 			TextAsset textAsset = Resources.Load(fileName, typeof(TextAsset)) as TextAsset;
 			if (textAsset) {

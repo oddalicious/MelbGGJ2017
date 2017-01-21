@@ -84,7 +84,9 @@ public class SetupManager : MonoBehaviour {
 		GameManager.Get().SetupGame();
 		introStoryCanvas.gameObject.SetActive(true);
 		introStoryTitle.text = CharacterManager.GetCharacterName(GameManager.Get().character);
-		introStoryText.text = CharacterManager.GetCharacterStory(GameManager.Get().character);
+		string[] story = CharacterManager.GetCharacterStory(GameManager.Get().character);
+		string title = story[0];
+		introStoryText.text = story[1];
 		GameManager.Get().LoadState(GameManager.GameState.Storyline);
 	}
 
