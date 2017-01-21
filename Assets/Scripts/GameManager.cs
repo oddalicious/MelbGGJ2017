@@ -24,7 +24,7 @@ public class GameManager {
 	}
 
 	public enum PlayerLoop {
-		Loading = 0,
+		NextPlayer = 0,
 		ReadOptions = 1
 	}
 
@@ -49,17 +49,22 @@ public class GameManager {
 	{
 		get
 		{
-			return players.Count;
+			if (players != null)
+				return players.Count;
+
+			else
+				return 0;
 		}
 	}
+
 	public void AddPlayer(string name) {
 		players.Add(name);
 	}
 
 	public void LoadState(GameState newGameState) {
-		if (gameState == GameState.Storyline && newGameState == GameState.PlayerLoop) {
+		if (gameState == GameState.Storyline && newGameState == GameState.PlayerLoop) 
 			SceneManager.LoadScene("PlayerLoop");
-		}
+		
 		this.gameState = newGameState;
 	}
 
@@ -80,21 +85,24 @@ public class GameManager {
 	}
 
 	void IteratePlayerLoop() {
-		if (currentTurn + 1 < players.Count) {
+		if (currentTurn + 1 < players.Count) 
 			currentTurn += 1;
-		}
-		else {
+		
+		else 
 			currentTurn = 0;
-			//LoadNextState();
-		}
+		
 	}
 
+	//Sets the ID back to the Default
 	void ResetOptions() {
 		for (int i = 0; i < options.Count; i++) {
 			options[i].playerID = Option.DEFAULT_INDEX;
+			options[i].correctlyChosen = false;
+			options[i].onScreen = false;
 		}
 	}
 
+	//Self Explanatory
 	void ShuffleOptions() {
 		for (int i = 0; i < options.Count; i++) {
 			Option temp = options[i];
@@ -107,52 +115,39 @@ public class GameManager {
 	public Option GenerateUnselectedOption() {
 		Option temp;
 		List<Option> tempOptions = options.Where(n => (!n.correctlyChosen && !n.onScreen)).ToList();
-		if (tempOptions.Count > 0) {
+		if (tempOptions.Count > 0) 
 			temp = Option.GenerateEmptyOption();
-		}
-		else {
+		
+		else 
 			temp = tempOptions[UnityEngine.Random.Range(0, tempOptions.Count - 1)];
-		}
+		
 
 		return temp;
 	}
 
-//	public void ContinueSetPlayers(int players) {
-//		LoadNextState();
-//	}
-//
-//	public void ContinuePlayerConfig() {
-//		GeneratePlayerLists();
-//		LoadNextState();
-//	}
-
-	public void ContinueStoryline() {
-
-	}
-
-	public void ContinuePassNextPlayer() {
-
-	}
-
-	public void ContinueReadOptions() {
-
-	}
-
 	public static GameManager Get() {
-		if (Instance == null) {
+		if (Instance == null) 
 			Instance = new GameManager();
-		}
+		
 		return Instance;
 	}
 
 	public void Reset() {
-		
+		ResetOptions();
+		gameState = GameState.Storyline;
+		currentTurn = 0;
+		playState = PlayerLoop.NextPlayer;
+	}
+
+	void Quit() {
+
 	}
 
 	public string GetPlayer(int index) {
-		if (index < players.Count) {
+		if (index < players.Count) 
 			return players[index];
-		} else {
+
+		else {
 			Debug.Log("index '" + index + "' out of bounds");
 			return "";
 		}
