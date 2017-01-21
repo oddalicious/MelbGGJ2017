@@ -8,6 +8,25 @@ public class SoundManager : MonoBehaviour {
 	private Dictionary<string, string> musicList;
 	private Dictionary<string, string> soundEffectsList;
 
+	// Public variables
+	public enum musicNames {
+		elevatorMusic,
+		upbeatMusic,
+		grimMusic,
+		fastPaceMusic
+	}
+
+	public enum SFXNames {
+		incrementOrDecrementSFX,
+		correctAnswerSFX,
+		gameOverFailSFX,
+		gameOverSuccessSFX,
+		timerUrgentSFX,
+		buttonTapSFX,
+		timerNormalSFX,
+		wrongAnswerSFX
+	}
+
 
 	// Common methods
 	void Start() {
@@ -20,23 +39,26 @@ public class SoundManager : MonoBehaviour {
 	private void setupMusic() {
 		musicList = new Dictionary<string, string>();
 
-		musicList["elevatorMusic"] = "01.mp3";
-		musicList["upbeatMusic"] = "02.mp3";
-		musicList["grimMusic"] = "03.mp3";
-		musicList["fastPaceMusic"] = "04.mp3";
+		musicList[musicNames.elevatorMusic.ToString()] = "01.mp3";
+		musicList[musicNames.upbeatMusic.ToString()] = "02.mp3";
+		musicList[musicNames.grimMusic.ToString()] = "03.mp3";
+		musicList[musicNames.fastPaceMusic.ToString()] = "04.mp3";
 	}
 
 	private void setupSoundEffects() {
 		soundEffectsList = new Dictionary<string, string>();
 
-		soundEffectsList["incrementOrDecrementSFX"] = "01incOrDecPlayerCount.ogg";
-		soundEffectsList["correctAnswerSFX"] = "02correct.ogg";
-		soundEffectsList["gameOverFailSFX"] = "03gameOverFail.ogg";
-		soundEffectsList["gameOverSuccessSFX"] = "04gameOverSuccess.ogg";
-		soundEffectsList["timerUrgentSFX"] = "05timerUrgent.ogg";
-		soundEffectsList["buttonTapSFX"] = "06buttonTap.ogg";
-		soundEffectsList["timerNormalSFX"] = "07timerNormal.ogg";
-		soundEffectsList["wrongAnswerSFX"] = "08wrong.ogg";
+		soundEffectsList[SFXNames.incrementOrDecrementSFX.ToString()] = "01incOrDecPlayerCount.ogg";
+		soundEffectsList[SFXNames.correctAnswerSFX.ToString()] = "02correct.ogg";
+		soundEffectsList[SFXNames.gameOverFailSFX.ToString()] = "03gameOverFail.ogg";
+		soundEffectsList[SFXNames.gameOverSuccessSFX.ToString()] = "04gameOverSuccess.ogg";
+		soundEffectsList[SFXNames.timerUrgentSFX.ToString()] = "05timerUrgent.ogg";
+		soundEffectsList[SFXNames.buttonTapSFX.ToString()] = "06buttonTap.ogg";
+		soundEffectsList[SFXNames.timerNormalSFX.ToString()] = "07timerNormal.ogg";
+		soundEffectsList[SFXNames.wrongAnswerSFX.ToString()] = "08wrong.ogg";
 	}
+
+
+
 
 }
