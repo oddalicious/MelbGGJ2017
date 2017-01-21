@@ -2,10 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MenuScript : MonoBehaviour {
 
+	public bool options = false;
+	public Toggle musicToggle;
+	public Toggle soundEffectToggle;
+
 	void Start() {
+		if (options) {
+			musicToggle.isOn = SoundManager.instance.getMusicEnabled();
+			soundEffectToggle.isOn = SoundManager.instance.getSoundEffectEnabled();
+		}
 		SoundManager.Get().playMusic(SoundManager.musicNames.elevatorMusic);
 	}
 
@@ -19,9 +28,24 @@ public class MenuScript : MonoBehaviour {
 		SceneManager.LoadScene("About");
 	}
 
-	public void BackFromAbout() {
+	public void LoadOptions() {
+		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
+		SceneManager.LoadScene("Options");
+	}
+
+	public void BackToTitle() {
 		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
 		SceneManager.LoadScene("Title");
+	}
+
+	public void ToggleSoundEffects() {
+		bool value = SoundManager.instance.ToggleSoundEffectSource();
+		soundEffectToggle.isOn = value;
+	}
+
+	public void ToggleMusic() {
+		bool value = SoundManager.instance.ToggleMusicSource();
+		musicToggle.isOn = value;
 	}
 
 	public void Quit() {

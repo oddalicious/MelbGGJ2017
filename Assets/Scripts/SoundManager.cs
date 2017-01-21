@@ -101,6 +101,24 @@ public class SoundManager : MonoBehaviour {
 		}
 	}
 
+	public bool ToggleMusicSource() {
+		AudioSource source = musicSource.GetComponentInChildren<AudioSource>();
+		return source.enabled = !source.enabled;
+	}
+
+	public bool ToggleSoundEffectSource() {
+		AudioSource source = soundEffectsSource.GetComponentInChildren<AudioSource>();
+		return source.enabled = !source.enabled;
+	}
+
+	public bool getSoundEffectEnabled() {
+		return soundEffectsSource.GetComponentInChildren<AudioSource>().enabled;
+	}
+
+	public bool getMusicEnabled() {
+		return musicSource.GetComponentInChildren<AudioSource>().enabled;
+	}
+
 	public void playSoundEffect(SFXNames sfxName) {
 		if (GameManager.Get().soundEffectsEnabled) {
 			AudioSource source = soundEffectsSource.GetComponentInChildren<AudioSource>();
