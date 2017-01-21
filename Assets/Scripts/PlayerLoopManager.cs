@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class PlayerLoopManager : MonoBehaviour {
 
@@ -21,10 +22,6 @@ public class PlayerLoopManager : MonoBehaviour {
 	private float currentTime = 0.0f;
 
 	private List<string> hexColours = new List<string> {"#f1c40f", "#2ecc71", "#3498db", "#9b59b6", "#e67e22", "#1abc9c", "#e74c3c"};
-
-	//TODO: delete this once we read from file..
-	//private List<string> options = new List<string> {"Hug her!", "Do a cool dance", "Sleep", "Do some programming", "Watch TV"};
-
 
 	// Common methods
 
@@ -79,16 +76,16 @@ public class PlayerLoopManager : MonoBehaviour {
 		passDeviceCanvas.gameObject.SetActive(false);
 		optionsCanvas.gameObject.SetActive(true);
 
-		//TODO: display more or less options depending on the player difficulty
+		Image insetImage = optionsCanvas.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name == "InsetImage");
+
 		int maxOptions = GameManager.Get().NumberOfOptions;
 		for (int i = 0; i < maxOptions + 1; i++) {
-			Vector2 position = new Vector2(0, 300 - (i * 100));
+			Vector2 position = new Vector2(100, 200 - (i * 100));
 			var option = Instantiate(optionText, position, Quaternion.identity);
 
-			//TODO: update the option text to be read from file...
 			option.text = string.Format("<color={0}>{1}</color>", hexColours[i % hexColours.Count], GameManager.Get().GetCorrectOptionForPlayer(i, playersTurn).text);
 
-			option.transform.SetParent(optionsCanvas.transform, false);
+			option.transform.SetParent(insetImage.transform, false);
 			visibleOptions.Add(option.gameObject);
 			currentTime = timeToView;
 			timerText.gameObject.SetActive(true);
