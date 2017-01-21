@@ -35,6 +35,10 @@ public class GameManager {
 		if (players == null)
 			players = new List<string>();
 
+		//TODO: remove this, its just for testing the PlayerLoop scene
+		players.Add("playerOne");
+		players.Add("playerTwo");
+
 		if (options == null)
 			options = new List<Option>();
 	}
