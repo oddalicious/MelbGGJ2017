@@ -77,16 +77,19 @@ public class GamePlayManager : MonoBehaviour {
 	 * Generic
 	 ****************/
 	public void Reset() {
+		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
 		GameManager.Get().Reset();
 		SceneManager.LoadScene("GameSetup");
 	}
 
 	public void Quit() {
+		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
 		GameManager.Get().Quit();
 		SceneManager.LoadScene("Title");
 	}
 
 	public void ResetButtons() {
+		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
 		foreach (Option op in currentOptions) {
 			op.onScreen = false;
 		}
@@ -148,7 +151,10 @@ public class GamePlayManager : MonoBehaviour {
 	//BUTTON STUFF
 	void ButtonPress(int button) {
 		if (currentOptions[button].positiveCharacter != Option.DEFAULT_INDEX) {
+			SoundManager.Get().playSoundEffect(SoundManager.SFXNames.correctAnswerSFX);
 			currentOptions[button].correctlyChosen = true;
+		} else {
+			SoundManager.Get().playSoundEffect(SoundManager.SFXNames.wrongAnswerSFX);
 		}
 		ResetButtons();
 	}
