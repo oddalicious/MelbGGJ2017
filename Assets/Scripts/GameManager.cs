@@ -4,8 +4,9 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 
-public class GameManager : MonoBehaviour {
+public class GameManager {
 
 	// Constants
 	public const int MIN_PLAYERS = 2;
@@ -29,8 +30,14 @@ public class GameManager : MonoBehaviour {
 
 	private int difficulty = 3;
 
-	//Make sure it can't be made by calling new.
-	protected GameManager() { }
+	//Make sure it can't be made by calling from another object.
+	protected GameManager() {
+		if (players == null)
+			players = new List<string>();
+
+		if (options == null)
+			options = new List<Option>();
+	}
 
 	private int currentTurn = 0;
 	private List<string> players;
@@ -45,24 +52,6 @@ public class GameManager : MonoBehaviour {
 			return players.Count;
 		}
 	}
-
-	void Awake() {
-		if (Instance == null)
-			Instance = this;
-
-		else if (Instance != this)
-			Destroy(gameObject);
-
-		if (players == null)
-			players = new List<string>();
-
-		if (options == null)
-			options = new List<Option>();
-
-		//Set this to not be destroyed when reloading scene
-		DontDestroyOnLoad(gameObject);
-	}
-
 	public void AddPlayer(string name) {
 		players.Add(name);
 	}
@@ -109,7 +98,7 @@ public class GameManager : MonoBehaviour {
 	void ShuffleOptions() {
 		for (int i = 0; i < options.Count; i++) {
 			Option temp = options[i];
-			int randomIndex = Random.Range(i, options.Count);
+			int randomIndex = UnityEngine.Random.Range(i, options.Count);
 			options[i] = options[randomIndex];
 			options[randomIndex] = temp;
 		}
@@ -117,12 +106,12 @@ public class GameManager : MonoBehaviour {
 
 	public Option GenerateUnselectedOption() {
 		Option temp;
-		List<Option> tempOptions = options.Where(n => !n.selected).ToList();
+		List<Option> tempOptions = options.Where(n => (!n.correctlyChosen && !n.onScreen)).ToList();
 		if (tempOptions.Count > 0) {
 			temp = Option.GenerateEmptyOption();
 		}
 		else {
-			temp = tempOptions[Random.Range(0, tempOptions.Count - 1)];
+			temp = tempOptions[UnityEngine.Random.Range(0, tempOptions.Count - 1)];
 		}
 
 		return temp;
@@ -151,9 +140,13 @@ public class GameManager : MonoBehaviour {
 
 	public static GameManager Get() {
 		if (Instance == null) {
-			Instance = Camera.main.gameObject.AddComponent<GameManager>();
+			Instance = new GameManager();
 		}
 		return Instance;
+	}
+
+	public void Reset() {
+		
 	}
 
 	public string GetPlayer(int index) {

@@ -1,14 +1,31 @@
 ﻿public class Option {
+	public int id;
 	public static int DEFAULT_INDEX = -99;
 	public string text;
-	public bool selected = false;
+	public bool correctlyChosen = false;
+	public bool onScreen = false;
 	public int playerID = DEFAULT_INDEX;
 
 	public static Option GenerateEmptyOption() {
 		Option temp = new Option();
 		temp.text = "---";
-		temp.selected = false;
+		temp.correctlyChosen = false;
 		temp.playerID = DEFAULT_INDEX;
 		return temp;
+	}
+
+	public override bool Equals(object obj) {
+		// If paramater is null or false
+		if (obj == null) {
+			return false;
+		}
+
+		//If parameter cannot e cast to a Option return false
+		Option o = obj as Option;
+		if (o == null) {
+			return false;
+		}
+
+		return (o.id == this.id);
 	}
 }
