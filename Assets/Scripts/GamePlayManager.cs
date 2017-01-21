@@ -146,6 +146,12 @@ public class GamePlayManager : MonoBehaviour {
 		b.onClick.AddListener(() => ButtonPress(value));
 	}
 
+	public void Skip() {
+		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.wrongAnswerSFX);
+		incorrectAnswers++;
+		ResetButtons();
+	}
+
 	//BUTTON STUFF
 	void ButtonPress(int button) {
 		if (currentOptions[button].positiveCharacter != Option.DEFAULT_INDEX) {
