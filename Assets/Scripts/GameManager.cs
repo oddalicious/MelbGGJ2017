@@ -5,6 +5,8 @@ using System.Linq;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
+using System.IO;
+using System.Text;
 
 public class GameManager {
 
@@ -28,7 +30,15 @@ public class GameManager {
 		ReadOptions = 1
 	}
 
-	private int difficulty = 3;
+	private int numberOfOptions = 3;
+
+	public int NumberOfOptions
+	{
+		get
+		{
+			return numberOfOptions;
+		}
+	}
 
 	//Make sure it can't be made by calling from another object.
 	protected GameManager() {
@@ -37,17 +47,15 @@ public class GameManager {
 
 		//TODO: remove this, its just for testing the PlayerLoop scene
 		players.Add("playerOne");
-		players.Add("playerTwo");
+		players.Add("playerTwo");	
 
 		if (options == null)
 			options = new List<Option>();
 	}
 
-	private int currentTurn = 0;
 	private List<string> players;
 	private List<Option> options;
 	private GameState gameState;
-	private PlayerLoop playState;
 
 	public int NumPlayers
 	{
@@ -85,21 +93,12 @@ public class GameManager {
 		int count = 0;
 		for (int i = 0; i < players.Count; i++) {
 			//loop through difficulty
-			for (int j = 0; j < difficulty; j++) {
+			for (int j = 0; j < numberOfOptions; j++) {
 				//Let it know which Player it has
 				options[count].playerID = i;
 				count++;
 			}
 		}
-	}
-
-	void IteratePlayerLoop() {
-		if (currentTurn + 1 < players.Count) 
-			currentTurn += 1;
-		
-		else 
-			currentTurn = 0;
-		
 	}
 
 	//Sets the ID back to the Default
@@ -148,6 +147,22 @@ public class GameManager {
 		return temp;
 	}
 
+	public Option GetCorrectOptionForPlayer(int index, int playerID) {
+		Option temp = Option.GenerateEmptyOption();
+		int count = 0;
+		foreach (Option option in options) {
+			if (option.playerID == playerID) {
+				if (count == index) {
+					temp = option;
+					break;
+				}
+				count++;
+			}
+		}
+
+		return temp;
+	}
+
 	public List<Option>GetXAvailableOptions(int x) {
 		List<Option> returnList = new List<Option>();
 		ShuffleOptions();
@@ -170,8 +185,11 @@ public class GameManager {
 	public void Reset() {
 		ResetOptions();
 		gameState = GameState.Storyline;
-		currentTurn = 0;
-		playState = PlayerLoop.NextPlayer;
+	}
+
+	public void SetupGame() {
+		LoadOptionsFromText();
+		GeneratePlayerLists();
 	}
 
 	void Quit() {
@@ -185,6 +203,34 @@ public class GameManager {
 		else {
 			Debug.Log("index '" + index + "' out of bounds");
 			return "";
+		}
+	}
+
+	bool LoadOptionsFromText(string fileName = "Words") {
+		// Handle any problems that might arise when reading the text
+		try {
+			string[] lines;
+			TextAsset textAsset = Resources.Load(fileName, typeof(TextAsset)) as TextAsset;
+			if (textAsset) {
+
+				lines = textAsset.text.Split("\n"[0]);
+
+				int count = 0;
+				if (lines.Length > 0) {
+					for (int i = 0; i < lines.Length; i++) {
+						options.Add(Option.GenerateOption(count, lines[i]));
+						count++;
+					}
+				}
+				return true;
+			}
+			return false;
+		}
+		// If anything broke in the try block, we throw an exception with information
+		// on what didn't work
+		catch (Exception e) {
+			Console.WriteLine("{0}\n", e.Message);
+			return false;
 		}
 	}
 }
