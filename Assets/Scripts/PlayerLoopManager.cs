@@ -83,7 +83,6 @@ public class PlayerLoopManager : MonoBehaviour {
 		for (int i = 0; i < maxOptions; i++) {
 			Vector2 position = new Vector2(100, 200 - (i * 100));
 			var option = Instantiate(optionText, position, Quaternion.identity);
-
 			option.text = string.Format("<color={0}>{1}</color>", hexColours[i % hexColours.Count], GameManager.Get().GetOptionForPlayerAtIndex(i, playersTurn).text);
 
 			option.transform.SetParent(insetImage.transform, false);
