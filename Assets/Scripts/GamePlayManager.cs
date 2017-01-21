@@ -29,6 +29,7 @@ public class GamePlayManager : MonoBehaviour {
 	private List<Option> currentOptions;
 
 	private float currentTime = 0.0f;
+	private int lastTime = 0;
 
 
 	//TODO: delete this once we generate from the previous scenes the answers/incorrect answers..
@@ -38,7 +39,7 @@ public class GamePlayManager : MonoBehaviour {
 	// Common methods
 
 	void Start() {
-		
+		SoundManager.Get().playMusic(SoundManager.musicNames.fastPaceMusic);
 		this.correctAnswers = 0;
 		this.incorrectAnswers = 0;
 		this.answerButtons = new List<Button>();
@@ -54,7 +55,16 @@ public class GamePlayManager : MonoBehaviour {
 		if (currentTime > 0.0f) {
 			currentTime -= Time.deltaTime;
 			timerText.text = currentTime.ToString("N0");
+			if (int.Parse(timerText.text) != lastTime) {
+				lastTime = int.Parse(timerText.text);
+				if (lastTime < 10) {
+					SoundManager.Get().playSoundEffect(SoundManager.SFXNames.timerUrgentSFX);
+				} else {
+					SoundManager.Get().playSoundEffect(SoundManager.SFXNames.timerNormalSFX);
+				}
+			}
 			if (currentTime <= 0) {
+				SoundManager.Get().playMusic(SoundManager.musicNames.grimMusic);
 				timerText.gameObject.SetActive(false);
 				gamePlayCanvas.gameObject.SetActive(false);
 				//TODO: implement game over!
@@ -146,6 +156,7 @@ public class GamePlayManager : MonoBehaviour {
 	private void startTimer() {
 		timerText.text = "30";
 		currentTime = 30;
+		lastTime = (int)currentTime;
 		timerText.gameObject.SetActive(true);
 	}
 }
