@@ -80,7 +80,7 @@ public class PlayerLoopManager : MonoBehaviour {
 		Image insetImage = optionsCanvas.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name == "InsetImage");
 
 		int maxOptions = GameManager.Get().NumberOfOptions;
-		for (int i = 0; i < maxOptions + 1; i++) {
+		for (int i = 0; i < maxOptions; i++) {
 			Vector2 position = new Vector2(100, 200 - (i * 100));
 			var option = Instantiate(optionText, position, Quaternion.identity);
 

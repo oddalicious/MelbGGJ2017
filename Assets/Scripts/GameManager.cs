@@ -10,11 +10,12 @@ using System.Text;
 
 public class GameManager {
 
-	// Constants
+	//***************************************************************
+	//* Constants 
+	//*************************************************************/
+
 	public const int MIN_PLAYERS = 2;
 	public const int MAX_PLAYERS = 4;
-
-	private static GameManager Instance = null;
 
 	public enum GameState {
 		PlayerSelect = 0,
@@ -30,10 +31,24 @@ public class GameManager {
 		ReadOptions = 1
 	}
 
-	private int numberOfOptions = 3;
+	//***************************************************************
+	//* Variables
+	//*************************************************************/
+
+	// Public
 	public bool soundEffectsEnabled = true;
 	public bool musicEnabled = true;
 
+	// Private
+	private static GameManager Instance = null;
+	private int numberOfOptions = 3;
+	private List<Player> players;
+	private List<Option> options;
+	private GameState gameState;
+
+	//***************************************************************
+	//* Accessors
+	//*************************************************************/
 	public int NumberOfOptions
 	{
 		get
@@ -41,23 +56,6 @@ public class GameManager {
 			return numberOfOptions;
 		}
 	}
-
-	//Make sure it can't be made by calling from another object.
-	protected GameManager() {
-		if (players == null)
-			players = new List<Player>();
-
-		//TODO: remove this, its just for testing the PlayerLoop scene
-		AddPlayer("playerOne");
-		AddPlayer("playerTwo");	
-
-		if (options == null)
-			options = new List<Option>();
-	}
-
-	private List<Player> players;
-	private List<Option> options;
-	private GameState gameState;
 
 	public int NumPlayers
 	{
@@ -71,6 +69,27 @@ public class GameManager {
 		}
 	}
 
+	// Constructor - Protected so it can only construct itself.
+	protected GameManager() {
+		if (players == null)
+			players = new List<Player>();
+
+		//TODO: remove this, its just for testing the PlayerLoop scene
+		AddPlayer("playerOne");
+		AddPlayer("playerTwo");	
+
+		if (options == null)
+			options = new List<Option>();
+	}
+
+	//***************************************************************
+	//* Public Functions
+	//*************************************************************/
+
+	//**********************
+	//* Player Data
+	//*********************/
+
 	public void AddPlayer(string name) {
 		if (players != null)
 			players.Add(new Player (players.Count, name));
@@ -80,6 +99,34 @@ public class GameManager {
 		if (players != null && players.Count > 0)
 		players.RemoveAt(players.Count - 1);
 	}
+
+	public string GetPlayerName(int id) {
+		if (id < players.Count) {
+			foreach (Player p in players) {
+				if (p.id == id)
+					return p.name;
+			}
+		}
+		else
+			Debug.Log("index '" + id + "' out of bounds");
+		return "";
+	}
+
+	public Player GetPlayer(int id) {
+		if (id < players.Count) {
+			foreach (Player p in players) {
+				if (p.id == id)
+					return p;
+			}
+		}
+		else
+			Debug.Log("index '" + id + "' out of bounds");
+		return null;
+	}
+
+	//**********************
+	//* Generic
+	//*********************/
 
 	public void LoadState(GameState newGameState) {	
 		if (gameState == GameState.Storyline && newGameState == GameState.PlayerLoop) 
@@ -91,46 +138,47 @@ public class GameManager {
 
 	}
 
-	private void GeneratePlayerLists() {
-		ShuffleList(options);
+	public static GameManager Get() {
+		if (Instance == null)
+			Instance = new GameManager();
 
-		//Loop through players
-		int count = 0;
-		for (int i = 0; i < players.Count; i++) {
-			//loop through difficulty
-			for (int j = 0; j < numberOfOptions; j++) {
-				//Let it know which Player it has
-				options[count].playerID = players[i].id;
-				count++;
-			}
-		}
+		return Instance;
 	}
 
-	//Sets the ID back to the Default
-	void ResetOptions() {
-		for (int i = 0; i < options.Count; i++) {
-			options[i].playerID = Option.DEFAULT_INDEX;
-			options[i].correctlyChosen = false;
-			options[i].onScreen = false;
-		}
+	public void Reset() {
+		ResetOptions();
+		gameState = GameState.Storyline;
 	}
+
+	public void SetupGame() {
+		LoadOptionsFromText();
+		GeneratePlayerLists();
+	}
+
+	public void Quit() {
+
+	}
+
+	//**********************
+	//* Options
+	//*********************/
 
 	public Option GetRandomAvailableOption() {
 		Option temp;
-		ShuffleList(options);
+		Shuffle<Option>(options);
 		List<Option> tempOptions = options.Where(n => (!n.correctlyChosen && !n.onScreen)).ToList();
-		if (tempOptions.Count == 0) 
+		if (tempOptions.Count == 0)
 			temp = Option.GenerateEmptyOption();
-		
-		else 
+
+		else
 			temp = tempOptions[UnityEngine.Random.Range(0, tempOptions.Count - 1)];
-		
+
 		return temp;
 	}
 
 	public Option GetRandomCorrectAvailableOption() {
 		Option temp;
-		ShuffleList(options);
+		Shuffle<Option>(options);
 		List<Option> tempOptions = options.Where(n => (!n.correctlyChosen && !n.onScreen && n.id != Option.DEFAULT_INDEX)).ToList();
 
 		if (tempOptions.Count == 0)
@@ -161,7 +209,7 @@ public class GameManager {
 		Option temp = Option.GenerateEmptyOption();
 		List<Option> tempList = options.Where(n => (!n.correctlyChosen && !n.onScreen && n.playerID == playerID)).ToList();
 		if (tempList.Count > 0) {
-			ShuffleList(tempList);
+			Shuffle<Option>(tempList);
 			temp = tempList[0];
 		}
 		return temp;
@@ -171,67 +219,46 @@ public class GameManager {
 		return options.Where(n => (!n.correctlyChosen && !n.onScreen && n.playerID == playerID)).ToList().Count;
 	}
 
+	public int GetNumberAvailableOptions() {
+		return options.Where(n => (!n.correctlyChosen && !n.onScreen)).ToList().Count;
+	}
+
 	public int GetRandomUnfinishedPlayer() {
+		Shuffle<Player>(players);
 		int playerIndex = UnityEngine.Random.Range(0, players.Count);
 		int count = GetNumberAvailableOptionsForPlayer(playerIndex);
 
 		return (count > 0) ? playerIndex : Option.DEFAULT_INDEX;
 	}
 
-	public List<Option>GetXAvailableOptions(int x) {
-		List<Option> returnList = new List<Option>();
-		ShuffleList(options);
-		List<Option> tempList = options.Where(n => (!n.correctlyChosen && !n.onScreen)).ToList();
+	//***************************************************************
+	//* Private Functions
+	//*************************************************************/
 
-		for (int i = 0; i < x; i++)
-			returnList.Add(tempList[i]);
+	private void GeneratePlayerLists() {
+		Shuffle<Option>(options);
 
-		return returnList;
-	}
-
-
-	public static GameManager Get() {
-		if (Instance == null) 
-			Instance = new GameManager();
-		
-		return Instance;
-	}
-
-	public void Reset() {
-		ResetOptions();
-		gameState = GameState.Storyline;
-	}
-
-	public void SetupGame() {
-		LoadOptionsFromText();
-		GeneratePlayerLists();
-	}
-
-	void Quit() {
-
-	}
-
-	public string GetPlayerName(int index) {
-		if (index < players.Count) 
-			return players[index].name;
-
-		else {
-			Debug.Log("index '" + index + "' out of bounds");
-			return "";
-		}
-	}
-
-	public Player GetPlayer(int id) {
-		if (id < players.Count) {
-			foreach (Player p in players) {
-				if (p.id == id)
-					return p;
+		//Loop through players
+		int count = 0;
+		for (int i = 0; i < players.Count; i++) {
+			//loop through difficulty
+			for (int j = 0; j < numberOfOptions; j++) {
+				//Let it know which Player it has
+				options[count].playerID = players[i].id;
+				count++;
 			}
 		}
-		return null;
 	}
 
-	bool LoadOptionsFromText(string fileName = "Words") {
+	private void ResetOptions() {
+		for (int i = 0; i < options.Count; i++) {
+			options[i].playerID = Option.DEFAULT_INDEX;
+			options[i].correctlyChosen = false;
+			options[i].onScreen = false;
+		}
+	}
+
+	private bool LoadOptionsFromText(string fileName = "Words") {
 		// Handle any problems that might arise when reading the text
 		try {
 			string[] lines;
@@ -259,9 +286,9 @@ public class GameManager {
 		}
 	}
 
-	void ShuffleList(List<Option> list) {
+	private void Shuffle<T>(List<T> list) {
 		for (int i = 0; i < list.Count; i++) {
-			Option temp = list[i];
+			T temp = list[i];
 			int randomIndex = UnityEngine.Random.Range(i, list.Count);
 			list[i] = list[randomIndex];
 			list[randomIndex] = temp;
