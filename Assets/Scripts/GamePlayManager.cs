@@ -118,9 +118,10 @@ public class GamePlayManager : MonoBehaviour {
 				newButton.transform.SetParent(outsetImage.transform, false);
 				//TODO: actually update with one of the possible incorrect/correct answers
 				newButton.GetComponentInChildren<Text>().text = currentOptions[i].text;
-				if (currentOptions[i].playerID != Option.DEFAULT_INDEX) {
-					newButton.GetComponentInChildren<Text>().color = Color.red;
-				}
+				newButton.onClick.AddListener(() => ButtonPress(i));
+				//if (currentOptions[i].playerID != Option.DEFAULT_INDEX) {
+				//	newButton.GetComponentInChildren<Text>().color = Color.red;
+				//}
 				answerButtons.Add(newButton);
 			}
 		}
@@ -128,6 +129,12 @@ public class GamePlayManager : MonoBehaviour {
 			//ROUND HAS ENDED
 		}
 
+	}
+
+	void ButtonPress(int button) {
+		if (currentOptions[button].positiveCharacter != Option.DEFAULT_INDEX) {
+			//currentoption
+		}
 	}
 
 	private void startTimer() {
