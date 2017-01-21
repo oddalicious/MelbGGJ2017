@@ -280,7 +280,6 @@ public class GameManager {
 
 	private void LoadOptionsForPlayer(int characterIndex) {
 		// Handle any problems that might arise when reading the text
-		string fileName = CharacterManager.GetCharacterFilepath(characterIndex);
 		string[] lines = ReadLinesFromTextFile(characterIndex);
 		if (lines.Length > 0) {
 			for (int i = 0; i < lines.Length; i++) {
