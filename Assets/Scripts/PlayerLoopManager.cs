@@ -117,6 +117,7 @@ public class PlayerLoopManager : MonoBehaviour {
 
 		option.transform.SetParent(answerArea.transform, false);
 		visibleOptions.Add(option.gameObject);
+		timeToView = Mathf.Clamp( GameManager.Get().GetPlayerDifficuty(playersTurn) * 1.6f,5,10);
 		currentTime = timeToView;
 		lastTime = (int)timeToView;
 		timerText.gameObject.SetActive(true);

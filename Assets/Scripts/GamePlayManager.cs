@@ -194,8 +194,15 @@ public class GamePlayManager : MonoBehaviour {
 	}
 
 	private void startTimer() {
-		timerText.text = "30";
-		currentTime = 30;
+		
+		int highestDifficulty = 0;
+		foreach (Player p in GameManager.Get().GetPlayers()) {
+			highestDifficulty = (p.difficulty > highestDifficulty) ? p.difficulty : highestDifficulty;
+		}
+		highestDifficulty *= 6;
+		highestDifficulty -= 3;
+		currentTime = (float)highestDifficulty;
+		timerText.text = highestDifficulty.ToString();
 		lastTime = (int)currentTime;
 		timerText.gameObject.SetActive(true);
 	}
