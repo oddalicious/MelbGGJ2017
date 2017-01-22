@@ -145,7 +145,7 @@ public class GamePlayManager : MonoBehaviour {
 				currentOptions.Add(temp);
 			}
 			for (int i = 0; i < ANSWERS_TO_DISPLAY; i++) {
-				var position = new Vector2(0, -50 - (i * 125));
+				var position = new Vector2(0, 0 - (i * 250));
 				var newButton = Instantiate(answerButtonPrefab, position, Quaternion.identity);
 				newButton.transform.SetParent(outsetImage.transform, false);
 				//TODO: actually update with one of the possible incorrect/correct answers
