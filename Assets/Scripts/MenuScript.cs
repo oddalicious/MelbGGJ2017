@@ -32,6 +32,11 @@ public class MenuScript : MonoBehaviour {
 		SceneManager.LoadScene("About");
 	}
 
+	public void LoadInstructions() {
+		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
+		SceneManager.LoadScene("Instructions");
+	}
+
 	public void LoadOptions() {
 		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
 		SceneManager.LoadScene("Options");
