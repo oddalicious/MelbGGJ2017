@@ -18,6 +18,7 @@ public class SetupManager : MonoBehaviour {
 	public Canvas introStoryCanvas;
 	public Text introStoryTitle;
 	public Text introStoryText;
+	public Image mainImage;
 
 
 	// Prefabs
@@ -98,6 +99,7 @@ public class SetupManager : MonoBehaviour {
 		string[] story = CharacterManager.GetCharacterStory(GameManager.Get().character);
 		string title = story[0];
 		introStoryText.text = story[1];
+		mainImage.sprite = CharacterManager.GetCharacterLogo(GameManager.Get().character,1,1);
 		GameManager.Get().LoadState(GameManager.GameState.Storyline);
 	}
 

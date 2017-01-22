@@ -6,12 +6,12 @@ using UnityEngine;
 enum CHARACTERS {
 	Boris = 1,
 	Fashionista = 2,
-	RighteousShadow = 3,
-	BearTrap = 4,
+	//RighteousShadow = 3,
+	//BearTrap = 3,
 }
 
 public class CharacterManager {
-	public const int MAX_CHARACTERS = 4;
+	public const int MAX_CHARACTERS = 2;
 	private static string OUTCOME_LIST_FILE = "Outcomes";
 	private static string STORY_LIST_FILE = "Stories";
 	public static string GetCharacterName(int index)
@@ -23,10 +23,10 @@ public class CharacterManager {
 				return "Boris";
 			case 2:
 				return "Fashionista";
-			case 3:
-				return "Righteous Shadow";
-			case 4:
-				return "BearTrap";
+			//case 3:
+			//	return "Righteous Shadow";
+			//case 4:
+			//	return "BearTrap";
 			default:
 				return "How did you get here?";
 		}
@@ -50,9 +50,43 @@ public class CharacterManager {
 		return output;
 	}
 
-	public static Texture2D GetCharacterLogo(int index) {
-		Texture2D temp = null;
-		return temp;
+	public static Sprite GetCharacterLogo(int characterIndex, int width, int height) {
+		Sprite sprite = new Sprite();
+		switch (characterIndex) {
+			case 0:
+				Debug.Log("You've selected an invalid character for Filepath: " + characterIndex);
+				break;
+			case 1:
+				sprite = Resources.Load("images/BorisLogo", typeof(Sprite)) as Sprite;
+				
+				break;
+			case 2:
+				sprite = Resources.Load("images/FashionistaLogo", typeof(Sprite)) as Sprite;
+				break;
+			default:
+
+				break;
+		}
+		return sprite;
+	}
+
+	public static Sprite GetOutcomeImage(int characterIndex, int outcome, int width, int height) {
+		Sprite tempSprite = new Sprite();
+		switch (characterIndex) {
+			case 0:
+				Debug.Log("You've selected an invalid character for Filepath: " + characterIndex);
+				break;
+			case 1:
+				tempSprite = Resources.Load("images/BorisOutCome"+ outcome + 1, typeof(Sprite)) as Sprite;
+				break;
+			case 2:
+				tempSprite = Resources.Load("images/FashionistaOutCome" + outcome + 1, typeof(Sprite)) as Sprite;
+				break;
+			default:
+
+				break;
+		}
+		return tempSprite;
 	}
 
 	public static string GetCharacterOptionsFilepath(int index) {
@@ -63,10 +97,10 @@ public class CharacterManager {
 				return "Boris";
 			case 2:
 				return "Fashionista";
-			case 3:
-				return "RighteousShadow";
-			case 4:
-				return "Beartrap";
+			//case 3:
+			//	return "RighteousShadow";
+			//case 4:
+			//	return "Beartrap";
 			default: {
 				Debug.Log("You've selected an invalid character for Filepath: " + index);
 				return "Not sure what you did here";

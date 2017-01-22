@@ -100,6 +100,7 @@ public class GamePlayManager : MonoBehaviour {
 
 	public void Quit() {
 		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
+		SoundManager.instance.musicSource.GetComponent<AudioSource>().Stop();
 		GameManager.Get().rememberPlayers = false;
 		GameManager.Get().Quit();
 		SceneManager.LoadScene("Title");
@@ -212,16 +213,10 @@ public class GamePlayManager : MonoBehaviour {
 		percentage *= 100;
 		outputText += "Total: " + (int)percentage + "%\n";
 		int outcome = 0;
-		if (percentage >= 80) {
-			outcome = 4;
-		}
-		else if( percentage >= 60) {
-			outcome = 3;
-		}
-		else if (percentage >= 40) {
+		if (percentage >= 66) {
 			outcome = 2;
 		}
-		else if (percentage >= 20) {
+		else if (percentage >= 33) {
 			outcome = 1;
 		}
 

@@ -102,12 +102,17 @@ public class SoundManager : MonoBehaviour {
 
 	public bool ToggleMusicSource() {
 		AudioSource source = musicSource.GetComponentInChildren<AudioSource>();
-		return source.enabled = !source.enabled;
+		source.enabled = !source.enabled;
+		GameManager.Get().musicEnabled = source.enabled;
+		return source.enabled;
+		
 	}
 
 	public bool ToggleSoundEffectSource() {
 		AudioSource source = soundEffectsSource.GetComponentInChildren<AudioSource>();
-		return source.enabled = !source.enabled;
+		source.enabled = !source.enabled;
+		GameManager.Get().soundEffectsEnabled = source.enabled;
+		return source.enabled;
 	}
 
 	public bool getSoundEffectEnabled() {
