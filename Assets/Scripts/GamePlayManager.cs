@@ -211,7 +211,7 @@ public class GamePlayManager : MonoBehaviour {
 		gameOverCanvas.gameObject.SetActive(true);
 		string outputText = "";
 		outputText += "Correct Scores: " + correctAnswers + ". Incorrect Answers: " + incorrectAnswers + "\n";
-		float percentage = (float)correctAnswers / GameManager.Get().NumCorrectOptions();
+		float percentage = (float)correctAnswers / (float)GameManager.Get().NumCorrectOptions();
 		percentage *= 100;
 		outputText += "Total: " + (int)percentage + "%\n";
 		int outcome = 0;
