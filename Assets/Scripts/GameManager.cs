@@ -138,6 +138,10 @@ public class GameManager {
 		players.Clear();
 	}
 
+	public void ShufflePlayers() {
+		Shuffle<Player>(players);
+	}
+
 	//**********************
 	//* Generic
 	//*********************/
@@ -175,13 +179,14 @@ public class GameManager {
 		bool[] characterFlag = new bool[CharacterManager.MAX_CHARACTERS];
 		for (int i = 0; i < CharacterManager.MAX_CHARACTERS; i++)
 			characterFlag[i] = false;
-
+		ShufflePlayers();
 		// Ensure generic answers are loaded
 		LoadOptionsForPlayer(0);
 		// Loop through players
 		LoadOptionsForPlayer(character);
 
 		GeneratePlayerLists();
+		
 	}
 
 	public void Quit() {
@@ -303,7 +308,7 @@ public class GameManager {
 
 		//Loop through players
 		foreach (Player player in players) {
-			List<Option> tempList = options.Where(n => (n.isPositiveToCharacter(character) && n.playerID == Option.DEFAULT_INDEX)).ToList();
+			List<Option> tempList = options.Where(n => (n.playerID == Option.DEFAULT_INDEX)).ToList();
 			//loop through difficulty
 			for (int j = 0; j < player.difficulty; j++) {
 				//Let it know which Player it has
@@ -331,7 +336,6 @@ public class GameManager {
 		if (lines.Length > 0) {
 			for (int i = 0; i < lines.Length; i++) {
 				Option temp = Option.GenerateOption(options.Count, lines[i]);
-				temp.positiveCharacter = characterIndex;
 				options.Add(temp);
 				}
 		}

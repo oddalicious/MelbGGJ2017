@@ -232,7 +232,7 @@ public class GamePlayManager : MonoBehaviour {
 			outputText += "Player " + p.name + "'s score: " + GameManager.Get().NumChosenCorrectAnswersFromPlayer(p.id)
 				+ "/" + GameManager.Get().NumPossibleCorrectAnswersFromPlayer(p.id) + "\n";
 		}
-		outputText += "\n" + CharacterManager.GetCharacterOutcome(GameManager.Get().character, outcome);
+		outputText  += CharacterManager.GetCharacterOutcome(GameManager.Get().character, outcome);
 		outcomeImage.sprite = CharacterManager.GetCharacterOutcomeImage(GameManager.Get().character, outcome);
 		
 		endGameText.text = outputText;

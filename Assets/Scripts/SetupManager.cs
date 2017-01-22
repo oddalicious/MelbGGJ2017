@@ -100,9 +100,9 @@ public class SetupManager : MonoBehaviour {
 			
 
 			var newDifficulty = Instantiate(playerDifficultyInputField, new Vector2(0, 480 - (i * 120)), Quaternion.identity);
-			var newDecrement = Instantiate(decrementButton, new Vector2(-100, 480 - (i * 120)), Quaternion.identity);
+			var newDecrement = Instantiate(decrementButton, new Vector2(-120, 480 - (i * 120)), Quaternion.identity);
 			AddDecrementButton(newDecrement, i);
-			var newIncrement = Instantiate(incrementButton, new Vector2(100, 480 - (i * 120)), Quaternion.identity);
+			var newIncrement = Instantiate(incrementButton, new Vector2(120, 480 - (i * 120)), Quaternion.identity);
 			AddIncrementButton(newIncrement, i);
 			newIncrement.transform.SetParent(difficultyArea.transform, false);
 			newDecrement.transform.SetParent(difficultyArea.transform, false);
