@@ -71,10 +71,9 @@ public class PlayerLoopManager : MonoBehaviour {
 		playersTurn++;
 		if (playersTurn < GameManager.Get().NumPlayers) {
 			ShowPlayerLoadScreen();
-		}
-		else {
+		} else {
 			SoundManager.Get().stopMusic();
-			GameManager.Get().LoadState(GameManager.GameState.Gameplay);
+			//GameManager.Get().LoadState(GameManager.GameState.Gameplay);
 		}
 	}
 

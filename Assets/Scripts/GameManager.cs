@@ -139,6 +139,10 @@ public class GameManager {
 	//* Generic
 	//*********************/
 
+	public void LoadMainMenu() {
+		SceneManager.LoadScene("Title");
+	}
+
 	public void LoadState(GameState newGameState) {	
 		if (gameState == GameState.Storyline && newGameState == GameState.PlayerLoop) 
 			SceneManager.LoadScene("PlayerLoop");
