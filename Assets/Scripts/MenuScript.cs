@@ -9,7 +9,6 @@ public class MenuScript : MonoBehaviour {
 	public bool options = false;
 	public Toggle musicToggle;
 	public Toggle soundEffectToggle;
-	public bool mainMenu = false;
 
 	void Start() {
 		if (options) {
