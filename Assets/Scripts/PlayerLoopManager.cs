@@ -16,6 +16,9 @@ public class PlayerLoopManager : MonoBehaviour {
 	public Text timerText;
 	public float timeToView = 5.0f;
 	List<GameObject> visibleOptions;
+
+	public Canvas instructionsCanvas;
+
 	// Private variables
 
 	private int playersTurn;
@@ -71,14 +74,19 @@ public class PlayerLoopManager : MonoBehaviour {
 		playersTurn++;
 		if (playersTurn < GameManager.Get().NumPlayers) {
 			ShowPlayerLoadScreen();
-		}
-		else {
-			SoundManager.Get().stopMusic();
-			GameManager.Get().LoadState(GameManager.GameState.Gameplay);
+		} else {
+			optionsCanvas.gameObject.SetActive(false);
+			instructionsCanvas.gameObject.SetActive(true);
 		}
 	}
 
 	// Button actions methods
+
+	public void startGame() {
+		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
+		SoundManager.Get().stopMusic();
+		GameManager.Get().LoadState(GameManager.GameState.Gameplay);
+	}
 
 	public void displayOptionsForUser() {
 		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
