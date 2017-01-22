@@ -50,7 +50,7 @@ public class CharacterManager {
 		return output;
 	}
 
-	public static Sprite GetCharacterLogo(int characterIndex, int width, int height) {
+	public static Sprite GetCharacterLogo(int characterIndex) {
 		Sprite sprite = new Sprite();
 		switch (characterIndex) {
 			case 0:
@@ -70,17 +70,17 @@ public class CharacterManager {
 		return sprite;
 	}
 
-	public static Sprite GetOutcomeImage(int characterIndex, int outcome, int width, int height) {
+	public static Sprite GetCharacterOutcomeImage(int characterIndex, int outcome) {
 		Sprite tempSprite = new Sprite();
 		switch (characterIndex) {
 			case 0:
 				Debug.Log("You've selected an invalid character for Filepath: " + characterIndex);
 				break;
 			case 1:
-				tempSprite = Resources.Load("images/BorisOutCome"+ outcome + 1, typeof(Sprite)) as Sprite;
+				tempSprite = Resources.Load("images/BorisOutcome"+ (outcome + 1), typeof(Sprite)) as Sprite;
 				break;
 			case 2:
-				tempSprite = Resources.Load("images/FashionistaOutCome" + outcome + 1, typeof(Sprite)) as Sprite;
+				tempSprite = Resources.Load("images/FashionistaOutcome" + (outcome + 1), typeof(Sprite)) as Sprite;
 				break;
 			default:
 
@@ -110,7 +110,7 @@ public class CharacterManager {
 	}
 
 	public static int GetRandomCharacter() {
-		return UnityEngine.Random.Range(1, MAX_CHARACTERS);
+		return UnityEngine.Random.Range(1, MAX_CHARACTERS + 1);
 	}
 
 	public static string GetCharacterOutcome(int character, int outcomeIndex) {

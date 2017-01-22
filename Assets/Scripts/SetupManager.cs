@@ -14,6 +14,7 @@ public class SetupManager : MonoBehaviour {
 
 	public Canvas playerConfigCanvas;
 	private List<InputField> nameFields = new List<InputField>(); //these are generated
+	public Button continueNameButton;
 
 	public Canvas introStoryCanvas;
 	public Text introStoryTitle;
@@ -40,6 +41,15 @@ public class SetupManager : MonoBehaviour {
 			numberOfPlayersText.text = GameManager.Get().NumPlayers.ToString();
 			tempPlayerList = GameManager.Get().GetPlayers();
 		}
+	}
+
+	private void Update() {
+		bool donewithNames = true;
+		foreach (InputField field in nameFields) {
+			if (field.text.Length < 2)
+				donewithNames = false;
+		}
+		continueNameButton.interactable = donewithNames;
 	}
 
 
@@ -99,7 +109,7 @@ public class SetupManager : MonoBehaviour {
 		string[] story = CharacterManager.GetCharacterStory(GameManager.Get().character);
 		string title = story[0];
 		introStoryText.text = story[1];
-		mainImage.sprite = CharacterManager.GetCharacterLogo(GameManager.Get().character,1,1);
+		mainImage.sprite = CharacterManager.GetCharacterLogo(GameManager.Get().character);
 		GameManager.Get().LoadState(GameManager.GameState.Storyline);
 	}
 

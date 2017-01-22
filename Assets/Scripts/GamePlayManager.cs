@@ -19,6 +19,7 @@ public class GamePlayManager : MonoBehaviour {
 
 	public Canvas gameOverCanvas;
 	public Text endGameText;
+	public Image outcomeImage;
 
 	public Color goodColor = Color.green;
 	public Color badColor = Color.red;
@@ -225,6 +226,8 @@ public class GamePlayManager : MonoBehaviour {
 				+ "/" + GameManager.Get().NumPossibleCorrectAnswersFromPlayer(p.id) + "\n";
 		}
 		outputText += "\n" + CharacterManager.GetCharacterOutcome(GameManager.Get().character, outcome);
+		outcomeImage.sprite = CharacterManager.GetCharacterOutcomeImage(GameManager.Get().character, outcome);
+		
 		endGameText.text = outputText;
 	}
 
