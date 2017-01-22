@@ -16,6 +16,9 @@ public class GameManager {
 
 	public const int MIN_PLAYERS = 2;
 	public const int MAX_PLAYERS = 4;
+	public const int DEFAULT_DIFFICULTY = 3;
+	public const int MAX_DIFFICULTY = 7;
+	public const int MIN_DIFFICULTY = 3;
 
 	public enum GameState {
 		PlayerSelect = 0,

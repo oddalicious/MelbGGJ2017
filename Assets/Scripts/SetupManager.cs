@@ -14,6 +14,7 @@ public class SetupManager : MonoBehaviour {
 
 	public Canvas playerConfigCanvas;
 	private List<InputField> nameFields = new List<InputField>(); //these are generated
+	private List<InputField> difficultyFields = new List<InputField>();
 	public Button continueNameButton;
 
 	public Canvas introStoryCanvas;
@@ -25,6 +26,9 @@ public class SetupManager : MonoBehaviour {
 	// Prefabs
 
 	public InputField playerNameInputField;
+	public InputField playerDifficultyInputField;
+	public Button decrementButton;
+	public Button incrementButton;
 
 	private List<Player> tempPlayerList;
 
@@ -86,22 +90,79 @@ public class SetupManager : MonoBehaviour {
 		GameManager.Get().LoadState(GameManager.GameState.PlayerConfig);
 
 		Image bottomArea = playerConfigCanvas.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name == "BottomArea");
+		Image nameArea = playerConfigCanvas.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name == "NameArea");
+		Image difficultyArea = playerConfigCanvas.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name == "DifficultyArea");
 		for (int i = 0; i < int.Parse(numberOfPlayersText.text); i++) {
-			var newField = Instantiate(playerNameInputField, new Vector2(0, 625 - (i * 120)), Quaternion.identity);
-			newField.transform.SetParent(bottomArea.transform, false);			
+			var newField = Instantiate(playerNameInputField, new Vector2(25, 480 - (i * 120)), Quaternion.identity);
+			newField.transform.SetParent(nameArea.transform, false);			
 			nameFields.Add(newField);
 			//If the playerList is not null, The Game has to have been set to remember players.
+			
+
+			var newDifficulty = Instantiate(playerDifficultyInputField, new Vector2(0, 480 - (i * 120)), Quaternion.identity);
+			var newDecrement = Instantiate(decrementButton, new Vector2(-100, 480 - (i * 120)), Quaternion.identity);
+			AddDecrementButton(newDecrement, i);
+			var newIncrement = Instantiate(incrementButton, new Vector2(100, 480 - (i * 120)), Quaternion.identity);
+			AddIncrementButton(newIncrement, i);
+			newIncrement.transform.SetParent(difficultyArea.transform, false);
+			newDecrement.transform.SetParent(difficultyArea.transform, false);
+			newDifficulty.transform.SetParent(difficultyArea.transform, false);
+			newDifficulty.interactable = false;
+			
+			difficultyFields.Add(newDifficulty);
+
 			if (tempPlayerList != null && i < tempPlayerList.Count) {
 				newField.text = tempPlayerList[i].name;
+				newDifficulty.text = tempPlayerList[i].difficulty.ToString();
 			}
+			else {
+				newDifficulty.text = GameManager.DEFAULT_DIFFICULTY.ToString();
+			}
+			//HANDLE DIFFICULTY THINGS HERE!!!
+
 		}
 		GameManager.Get().ClearPlayers();
 	}
 
+	void AddIncrementButton(Button b, int index) {
+		b.onClick.AddListener(() => IncrementDifficulty(index));
+	}
+
+	void AddDecrementButton(Button b, int index) {
+		b.onClick.AddListener(() => DecrementDifficutly(index));
+	}
+
+	public void IncrementDifficulty(int id) {
+		int tempdifficulty = 0;
+		if (int.TryParse(difficultyFields[id].text, out tempdifficulty)) {
+			tempdifficulty++;
+			if (tempdifficulty <= GameManager.MAX_DIFFICULTY) {
+				difficultyFields[id].text = tempdifficulty.ToString();
+			}
+		}
+	}
+
+	public void DecrementDifficutly(int id) {
+		int tempdifficulty = 0;
+		if (int.TryParse(difficultyFields[id].text, out tempdifficulty)) {
+			tempdifficulty--;
+			if (tempdifficulty >= GameManager.MIN_DIFFICULTY) {
+				difficultyFields[id].text = tempdifficulty.ToString();
+			}
+		}
+	}
+
 	public void MoveToStoryMode() {
 		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
-		foreach (InputField playerName in nameFields) 
-			GameManager.Get().AddPlayer(playerName.text);
+		for (int i = 0; i < nameFields.Count; i++) {
+			GameManager.Get().AddPlayer(nameFields[i].text);
+			int tempDifficulty = 0;
+			if (int.TryParse(difficultyFields[i].text, out tempDifficulty))
+				GameManager.Get().GetPlayer(i).difficulty = tempDifficulty;
+			else
+				GameManager.Get().GetPlayer(i).difficulty = GameManager.DEFAULT_DIFFICULTY;
+
+		}
 		playerConfigCanvas.gameObject.SetActive(false);
 		GameManager.Get().SetupGame();
 		introStoryCanvas.gameObject.SetActive(true);
