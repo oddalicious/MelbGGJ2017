@@ -62,9 +62,9 @@ public class SoundManager : MonoBehaviour {
 	private void setupMusic() {
 		musicList = new Dictionary<string, string>();
 
-		musicList[musicNames.elevatorMusic.ToString()] = "01";
-		musicList[musicNames.upbeatMusic.ToString()] = "02";
-		musicList[musicNames.grimMusic.ToString()] = "03";
+		musicList[musicNames.elevatorMusic.ToString()] = "01_01";
+		musicList[musicNames.upbeatMusic.ToString()] = "02_01";
+		//musicList[musicNames.grimMusic.ToString()] = "03";
 		musicList[musicNames.fastPaceMusic.ToString()] = "04";
 	}
 
@@ -73,8 +73,8 @@ public class SoundManager : MonoBehaviour {
 
 		soundEffectsList[SFXNames.incrementOrDecrementSFX.ToString()] = "01incOrDecPlayerCount";
 		soundEffectsList[SFXNames.correctAnswerSFX.ToString()] = "02correct";
-		soundEffectsList[SFXNames.gameOverFailSFX.ToString()] = "03gameOverFail";
-		soundEffectsList[SFXNames.gameOverSuccessSFX.ToString()] = "04gameOverSuccess";
+		soundEffectsList[SFXNames.gameOverFailSFX.ToString()] = "03gameOverFail_01";
+		soundEffectsList[SFXNames.gameOverSuccessSFX.ToString()] = "04gameOverSuccess_01";
 		soundEffectsList[SFXNames.timerUrgentSFX.ToString()] = "05timerUrgent";
 		soundEffectsList[SFXNames.buttonTapSFX.ToString()] = "06buttonTap";
 		soundEffectsList[SFXNames.timerNormalSFX.ToString()] = "07timerNormal";

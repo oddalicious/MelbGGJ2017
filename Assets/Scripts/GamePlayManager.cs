@@ -203,7 +203,8 @@ public class GamePlayManager : MonoBehaviour {
 	private void GameOver() {
 		currentTime = 0;
 		lastTime = 0;
-		SoundManager.Get().playMusic(SoundManager.musicNames.grimMusic);
+		//SoundManager.Get().playMusic(SoundManager.musicNames.grimMusic);
+		SoundManager.Get().stopMusic();
 		timerText.gameObject.SetActive(false);
 		gamePlayCanvas.gameObject.SetActive(false);
 		//TODO: implement game over!
@@ -219,6 +220,12 @@ public class GamePlayManager : MonoBehaviour {
 		}
 		else if (percentage >= 33) {
 			outcome = 1;
+		}
+		if (outcome > 0) {
+			SoundManager.Get().playSoundEffect(SoundManager.SFXNames.gameOverSuccessSFX);
+		}
+		else {
+			SoundManager.Get().playSoundEffect(SoundManager.SFXNames.gameOverFailSFX);
 		}
 
 		foreach (Player p in GameManager.Get().GetPlayers()) {
