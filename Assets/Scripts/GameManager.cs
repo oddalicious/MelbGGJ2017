@@ -299,6 +299,10 @@ public class GameManager {
 		return (count > 0) ? playerIndex : Option.DEFAULT_INDEX;
 	}
 
+	public int NumCorrectOptions() {
+		return options.Where(n => n.playerID != Option.DEFAULT_INDEX).ToList().Count;
+	}
+
 	//***************************************************************
 	//* Private Functions
 	//*************************************************************/
