@@ -65,7 +65,7 @@ public class SoundManager : MonoBehaviour {
 		musicList[musicNames.elevatorMusic.ToString()] = "01_01";
 		musicList[musicNames.upbeatMusic.ToString()] = "02_01";
 		//musicList[musicNames.grimMusic.ToString()] = "03";
-		musicList[musicNames.fastPaceMusic.ToString()] = "04";
+		musicList[musicNames.fastPaceMusic.ToString()] = "04_01";
 	}
 
 	private void setupSoundEffects() {
