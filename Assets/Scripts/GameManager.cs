@@ -19,6 +19,8 @@ public class GameManager {
 	public const int DEFAULT_DIFFICULTY = 3;
 	public const int MAX_DIFFICULTY = 7;
 	public const int MIN_DIFFICULTY = 3;
+	public const float MIN_PLAY_TIME = 30;
+	public const float MAX_PLAY_TIME = 45; // Should we need it
 
 	public enum GameState {
 		PlayerSelect = 0,

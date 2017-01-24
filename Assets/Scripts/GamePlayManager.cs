@@ -40,10 +40,6 @@ public class GamePlayManager : MonoBehaviour {
 	private bool buttonFade;
 	private float buttonFadeCD;
 
-	//TODO: delete this once we generate from the previous scenes the answers/incorrect answers..
-	//private List<string> options = new List<string> {"Hug her!", "Do a cool dance", "Sleep", "Do some programming", "Watch TV"};
-
-
 	// Common methods
 
 	void Start() {
@@ -52,7 +48,7 @@ public class GamePlayManager : MonoBehaviour {
 		this.incorrectAnswers = 0;
 		this.answerButtons = new List<Button>();
 		this.currentOptions = new List<Option>();
-		//TODO: maybe display a counter initially + some text telling players to place the phone in the centre, then call this..
+
 		GenerateButtons();
 
 		startTimer();
@@ -64,7 +60,7 @@ public class GamePlayManager : MonoBehaviour {
 			buttonFadeCD -= Time.deltaTime;
 			foreach(Button button in answerButtons) {
 				Color fadeColor = button.colors.highlightedColor;
-				fadeColor.a *= Time.deltaTime * 2.5f * -1; // decrement so it takes .25s to fade out
+				fadeColor.a *= Time.deltaTime * -2.5f; // decrement so it takes .25s to fade out
 				button.colors = SetColorBlock(button.colors, fadeColor);
 			}
 			if (buttonFadeCD <= 0.0f) {
@@ -133,7 +129,7 @@ public class GamePlayManager : MonoBehaviour {
 			//Loop through answer list
 			for (int i = 0; i < ANSWERS_TO_DISPLAY; i++) {
 				Option temp = null;
-				//If correct button, select a correct answer
+				//If where correct button should be, select a correct option
 				if (i == correctButton) {
 					temp = GameManager.Get().GetRandomOptionForPlayer(playerIndex);	
 				}
@@ -148,12 +144,8 @@ public class GamePlayManager : MonoBehaviour {
 				var position = new Vector2(0, 0 - (i * 250));
 				var newButton = Instantiate(answerButtonPrefab, position, Quaternion.identity);
 				newButton.transform.SetParent(outsetImage.transform, false);
-				//TODO: actually update with one of the possible incorrect/correct answers
 				newButton.GetComponentInChildren<Text>().text = currentOptions[i].text;
 				AddListener(newButton, i);
-				//if (currentOptions[i].playerID != Option.DEFAULT_INDEX) {
-				//	newButton.GetComponentInChildren<Text>().color = Color.red;
-				//}
 				answerButtons.Add(newButton);
 			}
 		}
@@ -176,16 +168,19 @@ public class GamePlayManager : MonoBehaviour {
 
 	//BUTTON STUFF
 	void ButtonPress(int button) {
+		//IF the playerID is not zero, it is a correct option
 		if (currentOptions[button].playerID >= 0) {
 			SoundManager.Get().playSoundEffect(SoundManager.SFXNames.correctAnswerSFX);
 			currentOptions[button].correctlyChosen = true;
 			answerButtons[button].colors = SetColorBlock(answerButtons[button].colors, goodColor);
 			correctAnswers++;
+		//Otherwise they selected the wrong option
 		} else {
 			SoundManager.Get().playSoundEffect(SoundManager.SFXNames.wrongAnswerSFX);
 			answerButtons[button].colors = SetColorBlock(answerButtons[button].colors, badColor);
 			incorrectAnswers++;
 		}
+		//Make sure that the player can't select more options than one at a time. Setting interactible to false would also work
 		foreach (Button b in answerButtons) {
 			b.onClick.RemoveAllListeners();
 		}
@@ -201,7 +196,7 @@ public class GamePlayManager : MonoBehaviour {
 		}
 		highestDifficulty *= 6;
 		highestDifficulty -= 3;
-		currentTime = (float)highestDifficulty;
+		currentTime = Mathf.Max((float)highestDifficulty, GameManager.MIN_PLAY_TIME); // ensure it can't be too short.
 		timerText.text = highestDifficulty.ToString();
 		lastTime = (int)currentTime;
 		timerText.gameObject.SetActive(true);
@@ -210,17 +205,16 @@ public class GamePlayManager : MonoBehaviour {
 	private void GameOver() {
 		currentTime = 0;
 		lastTime = 0;
-		//SoundManager.Get().playMusic(SoundManager.musicNames.grimMusic);
 		SoundManager.Get().stopMusic();
 		timerText.gameObject.SetActive(false);
 		gamePlayCanvas.gameObject.SetActive(false);
-		//TODO: implement game over!
 		gameOverCanvas.gameObject.SetActive(true);
 		string outputText = "";
 		outputText += "Correct Scores: " + correctAnswers + ". Incorrect Answers: " + incorrectAnswers + "\n";
 		float percentage = (float)correctAnswers / (float)GameManager.Get().NumCorrectOptions();
 		percentage *= 100;
 		outputText += "Total: " + (int)percentage + "%\n";
+		//Outcomes
 		int outcome = 0;
 		if (percentage >= 66) {
 			outcome = 2;
@@ -245,10 +239,10 @@ public class GamePlayManager : MonoBehaviour {
 		endGameText.text = outputText;
 	}
 
-	ColorBlock SetColorBlock (ColorBlock block, Color c) {
-		block.highlightedColor = c;
-		block.normalColor = c;
-		block.pressedColor = c;
+	ColorBlock SetColorBlock (ColorBlock block, Color color) {
+		block.highlightedColor = color;
+		block.normalColor = color;
+		block.pressedColor = color;
 		return block;
 	}
 }

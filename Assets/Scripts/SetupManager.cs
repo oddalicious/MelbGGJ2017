@@ -11,16 +11,15 @@ public class SetupManager : MonoBehaviour {
 
 	public Canvas playerNumbersCanvas;
 	public Text numberOfPlayersText;
-
 	public Canvas playerConfigCanvas;
-	private List<InputField> nameFields = new List<InputField>(); //these are generated
-	private List<InputField> difficultyFields = new List<InputField>();
 	public Button continueNameButton;
-
 	public Canvas introStoryCanvas;
 	public Text introStoryTitle;
 	public Text introStoryText;
 	public Image mainImage;
+
+	private List<InputField> nameFields = new List<InputField>(); //these are generated
+	private List<InputField> difficultyFields = new List<InputField>();
 
 
 	// Prefabs
@@ -31,7 +30,6 @@ public class SetupManager : MonoBehaviour {
 	public Button incrementButton;
 
 	private List<Player> tempPlayerList;
-
 
 
 	// Common methods
@@ -48,12 +46,12 @@ public class SetupManager : MonoBehaviour {
 	}
 
 	private void Update() {
-		bool donewithNames = true;
+		bool playersCompletedNameFill = true;
 		foreach (InputField field in nameFields) {
 			if (field.text.Length < 2)
-				donewithNames = false;
+				playersCompletedNameFill = false;
 		}
-		continueNameButton.interactable = donewithNames;
+		continueNameButton.interactable = playersCompletedNameFill;
 	}
 
 
@@ -67,6 +65,8 @@ public class SetupManager : MonoBehaviour {
 			numberOfPlayersText.text = numberOfPlayers.ToString();
 		}
 	}
+
+
 	public void DecrementPlayers(Text numText) {
 		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.incrementOrDecrementSFX);
 		int numberOfPlayers = int.Parse(numberOfPlayersText.text);
@@ -89,37 +89,34 @@ public class SetupManager : MonoBehaviour {
 
 		GameManager.Get().LoadState(GameManager.GameState.PlayerConfig);
 
-		Image bottomArea = playerConfigCanvas.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name == "BottomArea");
 		Image nameArea = playerConfigCanvas.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name == "NameArea");
 		Image difficultyArea = playerConfigCanvas.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name == "DifficultyArea");
+		//For each player, add a Name Field, Difficulty Field, and Increment/Decrement buttons.
 		for (int i = 0; i < int.Parse(numberOfPlayersText.text); i++) {
-			var newField = Instantiate(playerNameInputField, new Vector2(25, 480 - (i * 120)), Quaternion.identity);
-			newField.transform.SetParent(nameArea.transform, false);			
-			nameFields.Add(newField);
-			//If the playerList is not null, The Game has to have been set to remember players.
+			var newNameField = Instantiate(playerNameInputField, new Vector2(25, 480 - (i * 120)), Quaternion.identity);
+			newNameField.transform.SetParent(nameArea.transform, false);			
+			nameFields.Add(newNameField);
 			
+			var newDifficultyField = Instantiate(playerDifficultyInputField, new Vector2(0, 480 - (i * 120)), Quaternion.identity);
+			newDifficultyField.transform.SetParent(difficultyArea.transform, false);
+			newDifficultyField.interactable = false;
+			difficultyFields.Add(newDifficultyField);
 
-			var newDifficulty = Instantiate(playerDifficultyInputField, new Vector2(0, 480 - (i * 120)), Quaternion.identity);
-			var newDecrement = Instantiate(decrementButton, new Vector2(-90, 480 - (i * 120)), Quaternion.identity);
-			AddDecrementButton(newDecrement, i);
-			var newIncrement = Instantiate(incrementButton, new Vector2(90, 480 - (i * 120)), Quaternion.identity);
-			AddIncrementButton(newIncrement, i);
-			newIncrement.transform.SetParent(difficultyArea.transform, false);
-			newDecrement.transform.SetParent(difficultyArea.transform, false);
-			newDifficulty.transform.SetParent(difficultyArea.transform, false);
-			newDifficulty.interactable = false;
-			
-			difficultyFields.Add(newDifficulty);
+			var newIncrementButton = Instantiate(incrementButton, new Vector2(90, 480 - (i * 120)), Quaternion.identity);
+			newIncrementButton.transform.SetParent(difficultyArea.transform, false);
+			AddIncrementButton(newIncrementButton, i);
+
+			var newDecrementButton = Instantiate(decrementButton, new Vector2(-90, 480 - (i * 120)), Quaternion.identity);
+			newDecrementButton.transform.SetParent(difficultyArea.transform, false);
+			AddDecrementButton(newDecrementButton, i);
 
 			if (tempPlayerList != null && i < tempPlayerList.Count) {
-				newField.text = tempPlayerList[i].name;
-				newDifficulty.text = tempPlayerList[i].difficulty.ToString();
+				newNameField.text = tempPlayerList[i].name;
+				newDifficultyField.text = tempPlayerList[i].difficulty.ToString();
 			}
 			else {
-				newDifficulty.text = GameManager.DEFAULT_DIFFICULTY.ToString();
+				newDifficultyField.text = GameManager.DEFAULT_DIFFICULTY.ToString();
 			}
-			//HANDLE DIFFICULTY THINGS HERE!!!
-
 		}
 		GameManager.Get().ClearPlayers();
 	}
@@ -154,9 +151,11 @@ public class SetupManager : MonoBehaviour {
 
 	public void MoveToStoryMode() {
 		SoundManager.Get().playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
+		// Loop through the players and add them to the game. Set difficulty and names based upon their respective fields
 		for (int i = 0; i < nameFields.Count; i++) {
 			GameManager.Get().AddPlayer(nameFields[i].text);
 			int tempDifficulty = 0;
+			// If the difficulty can't be parsed to an int somehow, give it the default difficulty.
 			if (int.TryParse(difficultyFields[i].text, out tempDifficulty))
 				GameManager.Get().GetPlayer(i).difficulty = tempDifficulty;
 			else
@@ -166,9 +165,13 @@ public class SetupManager : MonoBehaviour {
 		playerConfigCanvas.gameObject.SetActive(false);
 		GameManager.Get().SetupGame();
 		introStoryCanvas.gameObject.SetActive(true);
+
+		//Populate Story data
 		introStoryTitle.text = CharacterManager.GetCharacterName(GameManager.Get().character);
 		string[] story = CharacterManager.GetCharacterStory(GameManager.Get().character);
-		string title = story[0];
+
+		// IMPLEMENT THIS IF WE HAVE A TITLE
+		//titleText.text title = story[0];
 		introStoryText.text = story[1];
 		mainImage.sprite = CharacterManager.GetCharacterLogo(GameManager.Get().character);
 		GameManager.Get().LoadState(GameManager.GameState.Storyline);
