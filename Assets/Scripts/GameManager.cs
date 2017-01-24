@@ -214,9 +214,10 @@ public class GameManager {
 		Option temp;
 		Shuffle<Option>(options);
 		List<Option> tempOptions = options.Where(n => (!n.correctlyChosen && !n.onScreen)).ToList();
-		if (tempOptions.Count == 0)
+		if (tempOptions.Count == 0) {
+			Debug.Log("Empty Option Generated In GetRandomAvailableOption");
 			temp = Option.GenerateEmptyOption();
-
+		}
 		else
 			temp = tempOptions[UnityEngine.Random.Range(0, tempOptions.Count - 1)];
 
@@ -228,9 +229,10 @@ public class GameManager {
 		Shuffle<Option>(options);
 		List<Option> tempOptions = options.Where(n => (!n.correctlyChosen && !n.onScreen && n.id != Option.DEFAULT_INDEX)).ToList();
 
-		if (tempOptions.Count == 0)
+		if (tempOptions.Count == 0){
+			Debug.Log("Empty Option Generated In GetRandomCorrectAvailableOption");
 			temp = Option.GenerateEmptyOption();
-
+		}
 		else
 			temp = tempOptions[UnityEngine.Random.Range(0, tempOptions.Count - 1)];
 
@@ -241,13 +243,11 @@ public class GameManager {
 		Option temp = Option.GenerateEmptyOption();
 		int count = 0;
 		foreach (Option option in options) {
-			if (option.playerID == playerID) {
-				if (count == index) {
+			if (option.playerID == playerID && count == index) {
 					temp = option;
 					break;
-				}
-				count++;
 			}
+			count++;
 		}
 		return temp;
 	}
@@ -258,6 +258,9 @@ public class GameManager {
 		if (tempList.Count > 0) {
 			Shuffle<Option>(tempList);
 			temp = tempList[0];
+		}
+		else {
+			Debug.Log("Unable to find Option for player in  GetRandomOptionForPlayer");
 		}
 		return temp;
 	}
@@ -317,7 +320,7 @@ public class GameManager {
 			List<Option> tempList = options.Where(n => (n.playerID == Option.DEFAULT_INDEX)).ToList();
 			//loop through difficulty
 			for (int j = 0; j < player.difficulty; j++) {
-				//Let it know which Player it has
+				//Let Option know which Player it has
 				tempList[j].playerID = player.id;
 			}
 		}

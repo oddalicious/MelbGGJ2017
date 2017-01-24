@@ -33,18 +33,4 @@ public class Option {
 		onScreen = false;
 		playerID = DEFAULT_INDEX;
 	}
-
-	//public override bool Equals(object obj) {
-	//	// If paramater is null or false
-	//	if (obj == null) 
-	//		return false;
-	//	
-	//
-	//	//If parameter cannot e cast to a Option return false
-	//	Option o = obj as Option;
-	//	if (o == null) 
-	//		return false;
-	//	
-	//	return (o.id == this.id);
-	//}
 }
