@@ -57,11 +57,11 @@ public class CharacterManager {
 				Debug.Log("You've selected an invalid character for Filepath: " + characterIndex);
 				break;
 			case 1:
-				sprite = Resources.Load("images/BorisLogo", typeof(Sprite)) as Sprite;
+				sprite = Resources.Load("images/UI/BorisLogo", typeof(Sprite)) as Sprite;
 				
 				break;
 			case 2:
-				sprite = Resources.Load("images/FashionistaLogo", typeof(Sprite)) as Sprite;
+				sprite = Resources.Load("images/UI/FashionistaLogo", typeof(Sprite)) as Sprite;
 				break;
 			default:
 
@@ -77,10 +77,10 @@ public class CharacterManager {
 				Debug.Log("You've selected an invalid character for Filepath: " + characterIndex);
 				break;
 			case 1:
-				tempSprite = Resources.Load("images/BorisOutcome"+ (outcome + 1), typeof(Sprite)) as Sprite;
+				tempSprite = Resources.Load("images/UI/BorisOutcome"+ (outcome + 1), typeof(Sprite)) as Sprite;
 				break;
 			case 2:
-				tempSprite = Resources.Load("images/FashionistaOutcome" + (outcome + 1), typeof(Sprite)) as Sprite;
+				tempSprite = Resources.Load("images/UI/FashionistaOutcome" + (outcome + 1), typeof(Sprite)) as Sprite;
 				break;
 			default:
 
