@@ -121,6 +121,5 @@ public class PlayerLoopManager : MonoBehaviour {
 		currentTime = timeToView;
 		lastTime = (int)timeToView;
 		timerText.gameObject.SetActive(true);
-
 	}
 }

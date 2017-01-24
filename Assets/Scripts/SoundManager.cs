@@ -62,10 +62,10 @@ public class SoundManager : MonoBehaviour {
 	private void setupMusic() {
 		musicList = new Dictionary<string, string>();
 
-		musicList[musicNames.elevatorMusic.ToString()] = "01_01";
-		musicList[musicNames.upbeatMusic.ToString()] = "02_01";
+		musicList[musicNames.elevatorMusic.ToString()] = "01";
+		musicList[musicNames.upbeatMusic.ToString()] = "02";
 		//musicList[musicNames.grimMusic.ToString()] = "03";
-		musicList[musicNames.fastPaceMusic.ToString()] = "04_01";
+		musicList[musicNames.fastPaceMusic.ToString()] = "04";
 	}
 
 	private void setupSoundEffects() {
