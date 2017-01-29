@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class SetupManager : MonoBehaviour {
 
@@ -20,6 +20,7 @@ public class SetupManager : MonoBehaviour {
 
 	private List<InputField> nameFields = new List<InputField>(); //these are generated
 	private List<InputField> difficultyFields = new List<InputField>();
+	private List<string> defaultPlayerNames = new List<string>();
 
 
 	// Prefabs
@@ -46,6 +47,12 @@ public class SetupManager : MonoBehaviour {
 	}
 
 	private void Update() {
+
+		if (Input.GetKeyDown(KeyCode.Escape))
+		{
+			GameManager.ClearManager();
+			SceneManager.LoadScene("Title");
+		}
 		bool playersCompletedNameFill = true;
 		foreach (InputField field in nameFields) {
 			if (field.text.Length < 2)
@@ -74,7 +81,6 @@ public class SetupManager : MonoBehaviour {
 			numberOfPlayers--;
 			numberOfPlayersText.text = numberOfPlayers.ToString();
 		}
-
 	}
 
 
@@ -89,12 +95,17 @@ public class SetupManager : MonoBehaviour {
 
 		GameManager.Get().LoadState(GameManager.GameState.PlayerConfig);
 
+		defaultPlayerNames = Player.GetDefaultPlayerNames();
+		Utilities.Shuffle<string>(defaultPlayerNames);
+
+
 		Image nameArea = playerConfigCanvas.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name == "NameArea");
 		Image difficultyArea = playerConfigCanvas.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name == "DifficultyArea");
 		//For each player, add a Name Field, Difficulty Field, and Increment/Decrement buttons.
 		for (int i = 0; i < int.Parse(numberOfPlayersText.text); i++) {
 			var newNameField = Instantiate(playerNameInputField, new Vector2(25, 480 - (i * 120)), Quaternion.identity);
-			newNameField.transform.SetParent(nameArea.transform, false);			
+			newNameField.transform.SetParent(nameArea.transform, false);	
+			newNameField.text = defaultPlayerNames[i];		
 			nameFields.Add(newNameField);
 			
 			var newDifficultyField = Instantiate(playerDifficultyInputField, new Vector2(0, 480 - (i * 120)), Quaternion.identity);

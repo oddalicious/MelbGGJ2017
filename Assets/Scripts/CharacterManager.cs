@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-enum CHARACTERS {
-	Boris = 1,
-	Fashionista = 2,
-	//RighteousShadow = 3,
-	//BearTrap = 3,
-}
+﻿using UnityEngine;
 
 public class CharacterManager {
 	public const int MAX_CHARACTERS = 2;
@@ -33,7 +23,7 @@ public class CharacterManager {
 	}
 
 	public static string[] GetCharacterStory(int index) {
-		string characterData = ReadLineFromCharacterStory(STORY_LIST_FILE, index);
+		string characterData = Utilities.ReadLinesFromFile(STORY_LIST_FILE, '\n')[index-1];
 		string[] output = SplitIntoStory(characterData);
 		return output;
 	}
@@ -115,42 +105,14 @@ public class CharacterManager {
 
 	public static string GetCharacterOutcome(int character, int outcomeIndex) {
 		string outcome = "INVALID OUTCOME";
-		string[] outcomes = ReadLinesFromCharacterFileAndSplit(OUTCOME_LIST_FILE, character);
+		string[] outcomes = Utilities.ReadLinesFromCharacterFileAndSplit(OUTCOME_LIST_FILE, character);
 		if (outcomeIndex < outcomes.Length) {
 			outcome = outcomes[outcomeIndex];
 		}
 		return outcome;
 	}
 
-	private static string ReadLineFromCharacterStory(string filename, int character) {
-		string lines =  "" ;
-		try {
-			TextAsset textAsset = Resources.Load(filename, typeof(TextAsset)) as TextAsset;
-			if (textAsset) {
-				lines = textAsset.text.Split("\n"[0])[character-1];
-			}
-		}
-		catch (Exception e) {
-			Debug.Log(e.ToString());
-		}
-		return lines;
-	}
-
-	private static string[] ReadLinesFromCharacterFileAndSplit(string filename, int character) {
-		string[] lines = { "" };
-		try {
-			TextAsset textAsset = Resources.Load(filename, typeof(TextAsset)) as TextAsset;
-			if (textAsset) {
-				lines = textAsset.text.Split("\n"[0]);
-				if (MAX_CHARACTERS - 1 < lines.Length) {
-					lines = lines[character - 1].Split("|"[0]);
-				}
-			}
-		}
-		catch (Exception e) {
-			Debug.Log(e.ToString());
-		}
-
-		return lines;
+	public static string[] GetCharacterOptionStringsFromTextFile(int characterIndex) {
+		return Utilities.ReadLinesFromFile(CharacterManager.GetCharacterOptionsFilepath(characterIndex), '\n');
 	}
 }

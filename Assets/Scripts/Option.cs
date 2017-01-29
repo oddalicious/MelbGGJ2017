@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-public class Option {
+﻿public class Option {
 	public static int DEFAULT_INDEX = -99;
 
 	public int id;
@@ -26,11 +24,5 @@ public class Option {
 		playerID = DEFAULT_INDEX;
 		correctlyChosen = false;
 		onScreen = false;
-	}
-
-	public void Reset() {
-		correctlyChosen = false;
-		onScreen = false;
-		playerID = DEFAULT_INDEX;
 	}
 }
