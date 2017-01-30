@@ -234,7 +234,7 @@ public class GameManager {
 			temp = tempList[0];
 		}
 		else {
-			Debug.Log("Unable to find Option for player in  GetRandomOptionForPlayer");
+			Debug.Log("Unable to find Option for player in GetRandomOptionForPlayer");
 		}
 		return temp;
 	}
@@ -249,29 +249,13 @@ public class GameManager {
 			tempList.Add(p);
 		}
 		Utilities.Shuffle<Player>(tempList);
-		int randomIndex = 0;
-		randomIndex = UnityEngine.Random.Range(0, tempList.Count - 1);
-		int playerIndex = tempList[randomIndex].id;
-		int count = GetNumberAvailableOptionsForPlayer(playerIndex);
-		if (count == 0) {
-			tempList.RemoveAt(randomIndex);
+        foreach (Player P in tempList)
+        {
+            if (GetNumberAvailableOptionsForPlayer(P.id) > 0)
+                return P.id;
+        }
 
-			do {
-				try {
-					randomIndex = UnityEngine.Random.Range(0, tempList.Count - 1);
-					playerIndex = tempList[randomIndex].id;
-					count = GetNumberAvailableOptionsForPlayer(playerIndex);
-					tempList.RemoveAt(randomIndex);
-				}
-				catch (Exception e) {
-					Debug.Log("INVALID INDEX WHEN GRABBING RANDOM PLAYER. \n" + e.ToString());
-					return Option.DEFAULT_INDEX;
-				}
-			} while (tempList.Count > 0 && count == 0);
-			
-		}
-
-		return (count > 0) ? playerIndex : Option.DEFAULT_INDEX;
+		return Option.DEFAULT_INDEX;
 	}
 
 	public int NumCorrectOptions() {
