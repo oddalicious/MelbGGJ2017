@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
@@ -100,6 +99,7 @@ public class GamePlayManager : MonoBehaviour {
 		SoundManager.instance.musicSource.GetComponent<AudioSource>().Stop();
 		GameManager.Get().rememberPlayers = false;
 		GameManager.Get().Quit();
+		GameManager.ClearManager();
 		SceneManager.LoadScene("Title");
 	}
 

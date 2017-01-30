@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
@@ -105,10 +104,11 @@ public class PlayerLoopManager : MonoBehaviour {
 				randomIndexOfColour = Random.Range(0, hexColours.Count);
 			}
 			previousRandomColours.Add(randomIndexOfColour);
+			string playerOption = GameManager.Get().GetOptionForPlayerAtIndex(i, playersTurn).text;
 			if (i > 0) {
-				allOptions = string.Format("{0}\n\n<color={1}>{2}</color>", allOptions, hexColours[randomIndexOfColour], GameManager.Get().GetOptionForPlayerAtIndex(i, playersTurn).text);
+				allOptions = string.Format("{0}\n\n<color={1}>{2}</color>", allOptions, hexColours[randomIndexOfColour],playerOption);
 			} else {
-				allOptions = string.Format("<color={0}>{1}</color>", hexColours[randomIndexOfColour], GameManager.Get().GetOptionForPlayerAtIndex(i, playersTurn).text);
+				allOptions = string.Format("<color={0}>{1}</color>", hexColours[randomIndexOfColour], playerOption);
 			}
 		}
 

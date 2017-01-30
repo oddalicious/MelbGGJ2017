@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MenuScript : MonoBehaviour {
 
 	public bool options = false;
+	public bool mainMenu = false;
 	public Toggle musicToggle;
 	public Toggle soundEffectToggle;
 
@@ -19,6 +18,22 @@ public class MenuScript : MonoBehaviour {
 			SoundManager.Get().playMusic(SoundManager.musicNames.elevatorMusic);
 		}
 		
+	}
+
+	void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.Escape))
+		{
+			if (!mainMenu)
+			{
+				SoundManager.Get().playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
+				BackToTitle();
+			}
+			else
+			{
+				Quit();
+			}
+		}
 	}
 
 	public void PlayGame() {
