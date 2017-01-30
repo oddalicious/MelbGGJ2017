@@ -215,7 +215,8 @@ public class GameManager {
 	public Option GetOptionForPlayerAtIndex(int index, int playerID) {
 		Option temp = Option.GenerateEmptyOption();
 		int count = 0;
-		foreach (Option option in options) {
+        List<Option> tempOptions = options.Where(n => n.playerID == playerID).ToList();
+		foreach (Option option in tempOptions) {
 			if (option.playerID == playerID && count == index) {
 					temp = option;
 					break;
