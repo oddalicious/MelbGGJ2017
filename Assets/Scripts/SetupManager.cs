@@ -26,9 +26,7 @@ public class SetupManager : MonoBehaviour {
 	// Prefabs
 
 	public InputField playerNameInputField;
-	public InputField playerDifficultyInputField;
-	public Button decrementButton;
-	public Button incrementButton;
+	public GameObject playerDifficultyArea;
 
 	private List<Player> tempPlayerList;
 
@@ -102,31 +100,34 @@ public class SetupManager : MonoBehaviour {
 		Image nameArea = playerConfigCanvas.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name == "NameArea");
 		Image difficultyArea = playerConfigCanvas.GetComponentsInChildren<Image>().FirstOrDefault(img => img.name == "DifficultyArea");
 		//For each player, add a Name Field, Difficulty Field, and Increment/Decrement buttons.
+		RectTransform rectTrans = playerNameInputField.GetComponent<RectTransform>();
 		for (int i = 0; i < int.Parse(numberOfPlayersText.text); i++) {
-			var newNameField = Instantiate(playerNameInputField, new Vector2(25, 480 - (i * 120)), Quaternion.identity);
+			var newNameField = Instantiate(playerNameInputField, new Vector2(0, -40 - (rectTrans.rect.height * i)), Quaternion.identity);
 			newNameField.transform.SetParent(nameArea.transform, false);	
 			newNameField.text = defaultPlayerNames[i];		
 			nameFields.Add(newNameField);
-			
-			var newDifficultyField = Instantiate(playerDifficultyInputField, new Vector2(0, 480 - (i * 120)), Quaternion.identity);
-			newDifficultyField.transform.SetParent(difficultyArea.transform, false);
-			newDifficultyField.interactable = false;
-			difficultyFields.Add(newDifficultyField);
 
-			var newIncrementButton = Instantiate(incrementButton, new Vector2(90, 480 - (i * 120)), Quaternion.identity);
-			newIncrementButton.transform.SetParent(difficultyArea.transform, false);
-			AddIncrementButton(newIncrementButton, i);
+			var newPlayerDifficultyArea = Instantiate(playerDifficultyArea, new Vector2(0, -40 - (rectTrans.rect.height * i)), Quaternion.identity);
+			newPlayerDifficultyArea.transform.SetParent(difficultyArea.transform, false);
+			var inputField = newPlayerDifficultyArea.gameObject.GetComponentInChildren<InputField>();
+			inputField.interactable = false;
+			difficultyFields.Add(inputField);
 
-			var newDecrementButton = Instantiate(decrementButton, new Vector2(-90, 480 - (i * 120)), Quaternion.identity);
-			newDecrementButton.transform.SetParent(difficultyArea.transform, false);
-			AddDecrementButton(newDecrementButton, i);
+			var buttons = newPlayerDifficultyArea.gameObject.GetComponentsInChildren<Button>();
+
+			foreach (Button button in buttons) {
+				if (button.name == "ButtonIncrement") {
+					AddIncrementButton(button, i);
+				} else if (button.name == "ButtonDecrement") {
+					AddDecrementButton(button, i);
+				}
+			}
 
 			if (tempPlayerList != null && i < tempPlayerList.Count) {
 				newNameField.text = tempPlayerList[i].name;
-				newDifficultyField.text = tempPlayerList[i].difficulty.ToString();
-			}
-			else {
-				newDifficultyField.text = GameManager.DEFAULT_DIFFICULTY.ToString();
+				inputField.text = tempPlayerList[i].difficulty.ToString();
+			} else {
+				inputField.text = GameManager.DEFAULT_DIFFICULTY.ToString();
 			}
 		}
 		GameManager.Get().ClearPlayers();
@@ -141,6 +142,7 @@ public class SetupManager : MonoBehaviour {
 	}
 
 	public void IncrementDifficulty(int id) {
+		SoundManager.instance.playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
 		int tempdifficulty = 0;
 		if (int.TryParse(difficultyFields[id].text, out tempdifficulty)) {
 			tempdifficulty++;
@@ -151,6 +153,7 @@ public class SetupManager : MonoBehaviour {
 	}
 
 	public void DecrementDifficutly(int id) {
+		SoundManager.instance.playSoundEffect(SoundManager.SFXNames.buttonTapSFX);
 		int tempdifficulty = 0;
 		if (int.TryParse(difficultyFields[id].text, out tempdifficulty)) {
 			tempdifficulty--;

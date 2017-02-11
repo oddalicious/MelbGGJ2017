@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class SoundManager : MonoBehaviour {
 
@@ -90,12 +91,16 @@ public class SoundManager : MonoBehaviour {
 
 	public void playMusic(musicNames musicName) {
 		if (GameManager.Get().musicEnabled) {
-			AudioSource source = musicSource.GetComponentInChildren<AudioSource>();
+			try {
+				AudioSource source = musicSource.GetComponentInChildren<AudioSource>();
 
-			var music = Resources.Load(string.Format("Music/Music/{0}", musicList[musicName.ToString()]), typeof(AudioClip)) as AudioClip;
-			source.clip = music;
+				var music = Resources.Load(string.Format("Music/Music/{0}", musicList[musicName.ToString()]), typeof(AudioClip)) as AudioClip;
+				source.clip = music;
 
-			source.Play();
+				source.Play();
+			} catch (Exception e) {
+				Debug.LogError("couldn't play sound effect, error: " + e);
+			}
 		}
 	}
 
@@ -124,23 +129,35 @@ public class SoundManager : MonoBehaviour {
 
 	public void playSoundEffect(SFXNames sfxName) {
 		if (GameManager.Get().soundEffectsEnabled) {
-			AudioSource source = soundEffectsSource.GetComponentInChildren<AudioSource>();
+			try {
+				AudioSource source = soundEffectsSource.GetComponentInChildren<AudioSource>();
 
-			var music = Resources.Load(string.Format("Music/SFX/{0}", soundEffectsList[sfxName.ToString()]), typeof(AudioClip)) as AudioClip;
-			source.clip = music;
+				var music = Resources.Load(string.Format("Music/SFX/{0}", soundEffectsList[sfxName.ToString()]), typeof(AudioClip)) as AudioClip;
+				source.clip = music;
 
-			source.Play();
+				source.Play();
+			} catch (Exception e) {
+				Debug.LogError("couldn't play sound effect, error: " + e);
+			}
 		}
 	}
 
 	public void stopMusic() {
-		AudioSource source = musicSource.GetComponentInChildren<AudioSource>();
-		source.Stop();
+		try {
+			AudioSource source = musicSource.GetComponentInChildren<AudioSource>();
+			source.Stop();
+		} catch (Exception e) {
+			Debug.LogError("error stopping music: " + e);
+		}
 	}
 
 	public void stopSoundEffect() {
-		AudioSource source = soundEffectsSource.GetComponentInChildren<AudioSource>();
-		source.Stop();
+		try {
+			AudioSource source = soundEffectsSource.GetComponentInChildren<AudioSource>();
+			source.Stop();
+		} catch (Exception e) {
+			Debug.LogError("error stopping sound effect: " + e);
+		}
 	}
 
 }

@@ -140,8 +140,9 @@ public class GamePlayManager : MonoBehaviour {
 				temp.onScreen = true;
 				currentOptions.Add(temp);
 			}
+			RectTransform rectTrans = answerButtonPrefab.GetComponent<RectTransform>();
 			for (int i = 0; i < ANSWERS_TO_DISPLAY; i++) {
-				var position = new Vector2(0, 0 - (i * 250));
+				var position = new Vector2(0, -75 - (i * rectTrans.rect.height));
 				var newButton = Instantiate(answerButtonPrefab, position, Quaternion.identity);
 				newButton.transform.SetParent(outsetImage.transform, false);
 				newButton.GetComponentInChildren<Text>().text = currentOptions[i].text;
