@@ -207,6 +207,7 @@ public class GamePlayManager : MonoBehaviour {
 		currentTime = 0;
 		lastTime = 0;
 		SoundManager.Get().stopMusic();
+		SoundManager.Get().stopSoundEffect();
 		timerText.gameObject.SetActive(false);
 		gamePlayCanvas.gameObject.SetActive(false);
 		gameOverCanvas.gameObject.SetActive(true);
@@ -214,7 +215,7 @@ public class GamePlayManager : MonoBehaviour {
 		outputText += "Correct Scores: " + correctAnswers + ". Incorrect Answers: " + incorrectAnswers + "\n";
 		float percentage = (float)correctAnswers / (float)GameManager.Get().NumCorrectOptions();
 		percentage *= 100;
-		outputText += "Total: " + (int)percentage + "%\n";
+		//outputText += "Total: " + (int)percentage + "%\n"; this is a little confusing to display
 		//Outcomes
 		int outcome = 0;
 		if (percentage >= 66) {

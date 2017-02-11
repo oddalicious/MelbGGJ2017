@@ -73,8 +73,8 @@ public class SoundManager : MonoBehaviour {
 
 		soundEffectsList[SFXNames.incrementOrDecrementSFX.ToString()] = "01incOrDecPlayerCount";
 		soundEffectsList[SFXNames.correctAnswerSFX.ToString()] = "02correct";
-		soundEffectsList[SFXNames.gameOverFailSFX.ToString()] = "03gameOverFail_01";
-		soundEffectsList[SFXNames.gameOverSuccessSFX.ToString()] = "04gameOverSuccess_01";
+		soundEffectsList[SFXNames.gameOverFailSFX.ToString()] = "03GameOverFail";
+		soundEffectsList[SFXNames.gameOverSuccessSFX.ToString()] = "04GameOverSuccess";
 		soundEffectsList[SFXNames.timerUrgentSFX.ToString()] = "05timerUrgent";
 		soundEffectsList[SFXNames.buttonTapSFX.ToString()] = "06buttonTap";
 		soundEffectsList[SFXNames.timerNormalSFX.ToString()] = "07timerNormal";
