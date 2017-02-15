@@ -230,9 +230,11 @@ public class GameManager {
 		Option temp = Option.GenerateEmptyOption();
 		List<Option> tempList = options.Where(n => (!n.correctlyChosen && !n.onScreen && n.playerID == playerID)).ToList();
 		if (tempList.Count > 0) {
+            
 			Utilities.Shuffle<Option>(tempList);
 			temp = tempList[0];
-		}
+            Debug.Log("Random player: " + playerID + ". Random Object = " + temp);
+        }
 		else {
 			Debug.Log("Unable to find Option for player in GetRandomOptionForPlayer");
 		}
